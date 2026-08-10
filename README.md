@@ -1,4 +1,4 @@
-# gymleco-fe
+# FE
 
 GYMLECO KOREA 프론트엔드. 공개 사이트와 관리자 CMS 두 앱이 들어 있습니다.
 
@@ -8,7 +8,7 @@ FE/
 └─ admin/   Vite + React — 관리자 CMS (admin.gymleco.co.kr)   [Phase 2]
 ```
 
-API 서버는 별도 저장소 **gymleco-be** 에 있습니다.
+API 서버는 별도 저장소 **BE** 에 있습니다.
 
 ---
 
@@ -71,3 +71,4 @@ npm --prefix web run dev
 **연출은 실패해도 콘텐츠를 가리지 않아야 합니다.** JS 없음 / reduced-motion /
 모바일 어느 경로로 빠지든 최악의 결과가 "애니메이션 없는 목록"이지 "빈 화면"이
 되어서는 안 됩니다. CI 가 프리렌더 HTML 에 제품명이 들어 있는지 검사합니다.
+# FE

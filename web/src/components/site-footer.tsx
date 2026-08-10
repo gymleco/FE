@@ -22,19 +22,43 @@ export function SiteFooter() {
           </p>
         </div>
 
-        <nav aria-label="푸터" className="flex gap-12 text-sm">
+        <nav aria-label="푸터" className="flex flex-wrap gap-x-12 gap-y-8 text-sm">
           <ul className="space-y-3">
+            <li className="text-xs tracking-wider text-ink-400">제품</li>
             <li>
-              <Link href="/about" className="text-ink-300 hover:text-ink-100">
-                브랜드 소개
+              <Link href="/products" className="text-ink-300 hover:text-ink-100">
+                제품 라인업
+              </Link>
+            </li>
+            <li>
+              <Link href="/used" className="text-ink-300 hover:text-ink-100">
+                중고 기구
+              </Link>
+            </li>
+            <li>
+              <Link href="/parts" className="text-ink-300 hover:text-ink-100">
+                부품
               </Link>
             </li>
             <li>
               <Link
-                href="/products"
+                href="/accessories"
                 className="text-ink-300 hover:text-ink-100"
               >
-                제품
+                악세사리
+              </Link>
+            </li>
+          </ul>
+          <ul className="space-y-3">
+            <li className="text-xs tracking-wider text-ink-400">브랜드</li>
+            <li>
+              <Link href="/about" className="text-ink-300 hover:text-ink-100">
+                About Gymleco
+              </Link>
+            </li>
+            <li>
+              <Link href="/centers" className="text-ink-300 hover:text-ink-100">
+                공식 헬스장
               </Link>
             </li>
             <li>
@@ -44,13 +68,20 @@ export function SiteFooter() {
             </li>
           </ul>
           <ul className="space-y-3">
+            <li className="text-xs tracking-wider text-ink-400">문의</li>
             <li>
-              <Link href="/contact" className="text-ink-300 hover:text-ink-100">
+              <Link
+                href="/contact?type=QUOTE"
+                className="text-ink-300 hover:text-ink-100"
+              >
                 견적 문의
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="text-ink-300 hover:text-ink-100">
+              <Link
+                href="/contact?type=DEMO"
+                className="text-ink-300 hover:text-ink-100"
+              >
                 무료 시연 신청
               </Link>
             </li>

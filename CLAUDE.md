@@ -1,7 +1,7 @@
 # CLAUDE.md — gymleco FE
 
 공개 사이트(`web/`)와 관리자 CMS(`admin/`)를 담는 저장소.
-백엔드는 별도 저장소(`gymleco-be`)에 있다.
+백엔드는 별도 저장소(`BE`)에 있다.
 
 ---
 
@@ -64,7 +64,7 @@
 
 ## 문서
 
-설계 문서는 org 의 [`.github`](https://github.com/GYMLECO-KOREA/.github) 저장소에 있다.
+설계 문서는 org 의 [`.github`](https://github.com/gymleco/.github) 저장소에 있다.
 
 | 문서 | 언제 보는가 |
 |---|---|

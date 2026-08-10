@@ -1,19 +1,34 @@
-import { TYPICAL_FOOTPRINT_M2, type Product } from "@/lib/products";
+import { TYPICAL_FOOTPRINT_M2 } from "@/lib/catalog";
 
 /**
  * 설치 면적 다이어그램
  *
- * 제품 사진이 아직 없다 (Phase 0 최대 리스크, 기획서 §16).
+ * 제품 사진이 아직 없다 (Phase 0 최대 리스크).
  * 그래서 자리표시자로 회색 박스를 두는 대신, 이 사이트의 핵심 소구점인
  * "설치 면적"을 실제 치수 비율로 그린다.
  *
  * 일반 상업용 기구의 평균 면적을 흐린 사각형으로 겹쳐 두어
- * §3.1 의 "공간 절약 비교 연출"을 정적으로도 성립시킨다.
+ * "공간 절약 비교"가 정적으로도 성립하게 한다.
  * 실사진이 확보되면 이 다이어그램은 사진 옆 보조 정보로 내려간다.
+ *
+ * 제품 객체가 아니라 숫자를 받는다 — 부품·악세사리처럼 치수가 없는
+ * 품목에는 애초에 렌더하지 않기 위해서다.
  */
-export function FootprintDiagram({ product }: { product: Product }) {
-  const widthM = product.widthMm / 1000;
-  const depthM = product.depthMm / 1000;
+export function FootprintDiagram({
+  nameKo,
+  footprintM2,
+  widthMm,
+  depthMm,
+  compact = false,
+}: {
+  nameKo: string;
+  footprintM2: number;
+  widthMm: number;
+  depthMm: number;
+  compact?: boolean;
+}) {
+  const widthM = widthMm / 1000;
+  const depthM = depthMm / 1000;
 
   // 비교 기준: 평균 면적을 같은 넓이의 정사각형으로 환산
   const typicalSide = Math.sqrt(TYPICAL_FOOTPRINT_M2);
@@ -32,8 +47,10 @@ export function FootprintDiagram({ product }: { product: Product }) {
   const productD = depthM * scale;
 
   const savedPercent = Math.round(
-    (1 - product.footprintM2 / TYPICAL_FOOTPRINT_M2) * 100,
+    (1 - footprintM2 / TYPICAL_FOOTPRINT_M2) * 100,
   );
+
+  const gridLines = Math.ceil(maxExtent) + 1;
 
   return (
     <figure className="w-full">
@@ -41,11 +58,11 @@ export function FootprintDiagram({ product }: { product: Product }) {
         viewBox={`0 0 ${CANVAS} ${CANVAS}`}
         className="w-full"
         role="img"
-        aria-label={`${product.nameKo} 설치 면적 ${product.footprintM2}제곱미터. 가로 ${product.widthMm}mm, 세로 ${product.depthMm}mm. 일반 기구 평균 ${TYPICAL_FOOTPRINT_M2}제곱미터와 비교.`}
+        aria-label={`${nameKo} 설치 면적 ${footprintM2}제곱미터. 가로 ${widthMm}mm, 세로 ${depthMm}mm. 일반 기구 평균 ${TYPICAL_FOOTPRINT_M2}제곱미터와 비교.`}
       >
         {/* 바닥 격자 — 1m 단위 */}
         <g stroke="currentColor" className="text-ink-700" strokeWidth="0.25">
-          {Array.from({ length: Math.ceil(maxExtent) + 1 }, (_, i) => (
+          {Array.from({ length: gridLines }, (_, i) => (
             <line
               key={`v${i}`}
               x1={originX + i * scale}
@@ -54,7 +71,7 @@ export function FootprintDiagram({ product }: { product: Product }) {
               y2={originY - (CANVAS - PAD * 2)}
             />
           ))}
-          {Array.from({ length: Math.ceil(maxExtent) + 1 }, (_, i) => (
+          {Array.from({ length: gridLines }, (_, i) => (
             <line
               key={`h${i}`}
               x1={originX}
@@ -87,30 +104,33 @@ export function FootprintDiagram({ product }: { product: Product }) {
         />
       </svg>
 
-      <figcaption className="mt-5 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-sm">
-        <span className="flex items-center gap-2 text-ink-300">
-          <span
-            aria-hidden="true"
-            className="inline-block size-3 rounded-xs bg-signal"
-          />
-          짐레코{" "}
-          <strong className="tabular font-semibold text-ink-100">
-            {product.footprintM2}m²
-          </strong>
-        </span>
-        <span className="flex items-center gap-2 text-ink-400">
-          <span
-            aria-hidden="true"
-            className="inline-block size-3 rounded-xs border border-ink-600 bg-ink-700/40"
-          />
-          일반 기구 평균 <span className="tabular">{TYPICAL_FOOTPRINT_M2}m²</span>
-        </span>
-        {savedPercent > 0 && (
-          <span className="tabular font-display font-bold text-signal">
-            −{savedPercent}%
+      {!compact && (
+        <figcaption className="mt-5 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-sm">
+          <span className="flex items-center gap-2 text-ink-300">
+            <span
+              aria-hidden="true"
+              className="inline-block size-3 rounded-xs bg-signal"
+            />
+            짐레코{" "}
+            <strong className="tabular font-semibold text-ink-100">
+              {footprintM2}m²
+            </strong>
           </span>
-        )}
-      </figcaption>
+          <span className="flex items-center gap-2 text-ink-400">
+            <span
+              aria-hidden="true"
+              className="inline-block size-3 rounded-xs border border-ink-600 bg-ink-700/40"
+            />
+            일반 기구 평균{" "}
+            <span className="tabular">{TYPICAL_FOOTPRINT_M2}m²</span>
+          </span>
+          {savedPercent > 0 && (
+            <span className="tabular font-display font-bold text-signal">
+              −{savedPercent}%
+            </span>
+          )}
+        </figcaption>
+      )}
     </figure>
   );
 }

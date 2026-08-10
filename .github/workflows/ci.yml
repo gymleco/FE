@@ -75,20 +75,60 @@ jobs:
 
       # 기획서 §3.4-5 — JS 없이도 텍스트가 DOM 에 존재해야 한다.
       # 회귀하면 SEO 와 접근성이 함께 무너지므로 CI 에서 지킨다.
-      - name: 프리렌더 HTML 에 콘텐츠가 있는지 확인
+      #
+      # ★ 단순 grep 으로는 검증되지 않는다.
+      #   Next.js 는 RSC 페이로드를 <script> 안에 직렬화해 넣기 때문에,
+      #   화면에 아무것도 안 나와도 grep 은 문자열을 찾아낸다.
+      #   실제로 useSearchParams 때문에 /products 가 빈 껍데기가 됐는데도
+      #   grep 검사는 통과했다. 반드시 script 를 걷어내고 봐야 한다.
+      - name: 프리렌더 HTML 에 실제 본문이 있는지 확인
         run: |
-          html=$(find .next/server/app -maxdepth 1 -name 'index.html' | head -1)
-          if [ -z "$html" ]; then
-            echo "::error::프리렌더된 index.html 이 없습니다 — 정적 생성이 꺼졌을 수 있습니다."
-            exit 1
-          fi
-          for needle in "설치 면적" "무료 시연" "파워 랙"; do
-            if ! grep -q "$needle" "$html"; then
-              echo "::error::프리렌더 HTML 에 '$needle' 이 없습니다."
-              exit 1
-            fi
-          done
-          echo "프리렌더 콘텐츠 확인 완료"
+          python3 - <<'PY'
+          import pathlib, re, html, sys
+
+          EXPECTED = {
+              "index":               ["파워 랙", "무료 시연"],
+              "products":            ["제품 라인업", "파워 랙", "설치 면적"],
+              "products/power-rack": ["파워 랙", "설치 면적"],
+              "used":                ["중고 기구", "상태 등급"],
+              "parts":               ["부품"],
+              "accessories":         ["악세사리"],
+              "centers":             ["공식 헬스장"],
+              "about":               ["스웨덴"],
+              "contact":             ["개인정보 수집", "(필수)", "(선택)"],
+              "privacy":             ["보유 및 이용 기간"],
+          }
+          # 본문이 이보다 적으면 셸만 렌더된 것으로 본다
+          MIN_WORDS = 60
+
+          def visible(path):
+              t = path.read_text(encoding="utf-8", errors="ignore")
+              t = re.sub(r"<script\b.*?</script>", " ", t, flags=re.S | re.I)
+              t = re.sub(r"<style\b.*?</style>", " ", t, flags=re.S | re.I)
+              return html.unescape(re.sub(r"<[^>]+>", " ", t))
+
+          base = pathlib.Path(".next/server/app")
+          failed = False
+          for name, needles in EXPECTED.items():
+              f = base / f"{name}.html"
+              if not f.exists():
+                  print(f"::error::{name} 이 정적 생성되지 않았습니다")
+                  failed = True
+                  continue
+              text = visible(f)
+              words = len(text.split())
+              if words < MIN_WORDS:
+                  print(f"::error::{name} 본문이 {words}단어뿐입니다 — 클라이언트 전용 렌더로 빠졌을 수 있습니다")
+                  failed = True
+              for n in needles:
+                  if n not in text:
+                      print(f"::error::{name} 본문에 '{n}' 이 없습니다")
+                      failed = True
+              if not failed:
+                  print(f"  OK  {name} ({words} words)")
+
+          sys.exit(1 if failed else 0)
+          PY
 
   # ── 관리자 SPA ────────────────────────────────────────────────
   admin:
