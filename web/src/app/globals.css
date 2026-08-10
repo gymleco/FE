@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/* ══════════════════════════════════════════════════════════════
+   디자인 토큰
+
+   브랜드 컬러는 아직 확정되지 않았다 (Phase 0 §18-3 대기).
+   아래 값은 "스웨덴 산업 디자인" 방향의 자리표시자이며,
+   본사 브랜드 가이드를 받으면 이 블록만 교체하면 된다.
+   컴포넌트에는 하드코딩된 색을 두지 않는다.
+   ══════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── 중립색 — 쇼케이스는 암전에서 시작한다 ── */
+  --color-ink-950: #08090a;
+  --color-ink-900: #0e1012;
+  --color-ink-800: #16191c;
+  --color-ink-700: #23272c;
+  --color-ink-600: #3a4046;
+  --color-ink-400: #7d848c;
+  --color-ink-300: #a8aeb6;
+  --color-ink-100: #e6e8ea;
+  --color-paper: #f6f6f4;
+  --color-paper-dim: #ececea;
+
+  /* ── 시그널 — 문의 CTA 전용. 남발하면 힘을 잃는다 ── */
+  --color-signal: #ffd400;
+  --color-signal-hover: #ffe14d;
+  --color-signal-ink: #0a0b0c;
+
+  /* ── 보조 ── */
+  --color-steel: #2b5f8c;
+  --color-danger: #e5484d;
+
+  /* ── 경계선 ── */
+  --color-hairline: rgb(255 255 255 / 0.12);
+  --color-hairline-dark: rgb(8 9 10 / 0.12);
+
+  /* ── 타이포그래피 ─────────────────────────────────────────
+     한글은 시스템 폰트로 간다.
+     next/font/google 의 Noto Sans KR 은 subsets 에 "korean" 이 없어
+     한글 글리프가 내려오지 않는다 (확인 완료). 한글 웹폰트를 쓰려면
+     next/font/local 로 직접 호스팅해야 하는데, 첫 화면 2.5초 제약
+     (기획서 §3.4-3) 을 감안하면 시스템 스택이 유리하다.
+     브랜드 지정 폰트를 받으면 --font-sans 만 교체한다.
+     ────────────────────────────────────────────────────────── */
+  --font-display: var(--font-archivo), "Archivo", system-ui, sans-serif;
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
+
+  /* ── 모션 ── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   베이스
+   ══════════════════════════════════════════════════════════════ */
+
+html {
+  /* Lenis 가 스크롤을 제어한다. 네이티브 smooth 와 충돌하지 않게 둔다. */
+  scroll-behavior: auto;
+  background-color: var(--color-ink-950);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* 숫자(설치 면적·치수)는 자릿수가 흔들리지 않아야 한다 */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 포커스 — 키보드 사용자가 지금 어디 있는지 항상 보여야 한다 ── */
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ── 선택 영역 ── */
+::selection {
+  background-color: var(--color-signal);
+  color: var(--color-signal-ink);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   제품 쇼케이스
+
+   기본값은 세로 스택이다. JS 가 없든, 크롤러가 오든, 모바일이든,
+   모션을 껐든 내용이 그대로 읽힌다.
+
+   데스크톱에서 GSAP 이 활성화될 때만 data-showcase="pinned" 가 붙어
+   패널이 겹친다. 즉 "겹치기"는 연출이지 레이아웃이 아니다.
+   ══════════════════════════════════════════════════════════════ */
+
+.showcase-stage[data-showcase="pinned"] {
+  display: block;
+}
+
+.showcase-stage[data-showcase="pinned"] .showcase-panel {
+  position: absolute;
+  /* 스테이지의 패딩 박스에 맞춰진다 */
+  inset: 0;
+  height: 100%;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   접근성 — prefers-reduced-motion (기획서 §3.4-2)
+
+   "애니메이션을 줄여달라"는 것은 취향이 아니라 접근성 요구다.
+   전정기관 장애가 있는 사용자에게 큰 스크럽 연출은 실제로 불편을 준다.
+   JS 쪽에서도 이 설정을 읽어 GSAP 타임라인을 정적 상태로 대체한다.
+   ══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

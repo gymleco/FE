@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ── 무엇이 바뀌었는지 먼저 판단한다 ──────────────────────────
+  # 관리자만 고쳤는데 공개 사이트를 다시 빌드할 이유가 없다.
+  changes:
+    name: 변경 범위 판단
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      admin: ${{ steps.filter.outputs.admin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web:
+              - 'web/**'
+              - '.github/workflows/ci.yml'
+            admin:
+              - 'admin/**'
+              - '.github/workflows/ci.yml'
+
+  # ── 시크릿 스캔 ───────────────────────────────────────────────
+  # pre-commit 훅은 --no-verify 로 우회될 수 있다. CI 에서 한 번 더 본다.
+  # 훅과 CI 는 서로의 백업이다.
+  secrets:
+    name: 시크릿 스캔
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  # ── 공개 사이트 ───────────────────────────────────────────────
+  web:
+    name: web 빌드
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://www.gymleco.co.kr
+
+      # 기획서 §3.4-5 — JS 없이도 텍스트가 DOM 에 존재해야 한다.
+      # 회귀하면 SEO 와 접근성이 함께 무너지므로 CI 에서 지킨다.
+      - name: 프리렌더 HTML 에 콘텐츠가 있는지 확인
+        run: |
+          html=$(find .next/server/app -maxdepth 1 -name 'index.html' | head -1)
+          if [ -z "$html" ]; then
+            echo "::error::프리렌더된 index.html 이 없습니다 — 정적 생성이 꺼졌을 수 있습니다."
+            exit 1
+          fi
+          for needle in "설치 면적" "무료 시연" "파워 랙"; do
+            if ! grep -q "$needle" "$html"; then
+              echo "::error::프리렌더 HTML 에 '$needle' 이 없습니다."
+              exit 1
+            fi
+          done
+          echo "프리렌더 콘텐츠 확인 완료"
+
+  # ── 관리자 SPA ────────────────────────────────────────────────
+  admin:
+    name: admin 빌드
+    needs: changes
+    if: needs.changes.outputs.admin == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: admin/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build

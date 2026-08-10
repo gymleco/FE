@@ -1,0 +1,56 @@
+# ══════════════════════════════════════════════════════════
+#  시크릿 — 가장 위에 둔다. 사고 원인 1위
+# ══════════════════════════════════════════════════════════
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+.aws/
+credentials
+secrets/
+*-credentials.json
+
+# ══════════════════════════════════════════════════════════
+#  Node / Next.js / Vite
+# ══════════════════════════════════════════════════════════
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+.vercel/
+.turbo/
+.wrangler/
+next-env.d.ts
+*.tsbuildinfo
+coverage/
+.eslintcache
+
+# ══════════════════════════════════════════════════════════
+#  IDE / OS
+# ══════════════════════════════════════════════════════════
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*~
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ══════════════════════════════════════════════════════════
+#  기타
+# ══════════════════════════════════════════════════════════
+*.log
+logs/
+gitleaks-report.json
+lighthouse-report.*
