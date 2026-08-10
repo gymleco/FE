@@ -57,10 +57,17 @@ export function ContactForm() {
   const [type, setType] = useState<string>("QUOTE");
   const [selected, setSelected] = useState<string[]>([]);
 
+  /*
+   * react-hooks/set-state-in-effect 를 이 블록에서만 끈다.
+   * 렌더 중에 window 를 읽으면 서버(쿼리를 모름)와 클라이언트의 초기값이
+   * 갈려 하이드레이션 불일치가 난다. URL 은 React 밖의 외부 시스템이므로
+   * 마운트 후 1회 동기화한다 — 위 주석의 SSG 제약과 같은 이유다.
+   */
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const presetType = params.get("type");
     if (presetType && TYPES.some((t) => t.value === presetType)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setType(presetType);
     }
     const presetProduct = params.get("product");
@@ -215,6 +222,7 @@ export function ContactForm() {
           name="spaceInfo"
           label="평수 · 천장 높이"
           placeholder="예) 30평 / 2.6m"
+          maxLength={200}
         />
       </div>
 

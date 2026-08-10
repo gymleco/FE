@@ -36,10 +36,20 @@ export function CatalogGrid({
 }) {
   const [active, setActive] = useState<ProductCategory | null>(null);
 
-  // 마운트 후에 URL 을 읽는다. 서버 렌더 결과에는 영향을 주지 않는다.
+  /*
+   * 마운트 후에 URL 을 읽는다. 서버 렌더 결과에는 영향을 주지 않는다.
+   *
+   * react-hooks/set-state-in-effect 를 이 줄에서만 끈다.
+   * 규칙의 취지("파생 상태를 렌더 중에 계산하라")는 맞지만, 여기서는
+   * 렌더 중에 window 를 읽을 수 없다 — 서버는 URL 쿼리를 모른 채
+   * 정적 HTML 을 만들고, 클라이언트가 다른 초기값을 쓰면 하이드레이션
+   * 불일치가 난다. URL 은 React 밖의 외부 시스템이고, 마운트 후 1회
+   * 동기화하는 것이 이 페이지에서 SSG 를 지키는 유일한 방법이다.
+   */
   useEffect(() => {
     const param = new URLSearchParams(window.location.search).get("category");
     if (param && categories.includes(param as ProductCategory)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActive(param as ProductCategory);
     }
   }, [categories]);
