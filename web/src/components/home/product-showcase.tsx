@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-import { CATEGORY_LABEL, equipment } from "@/lib/catalog";
+import { CATEGORY_LABEL, type Product } from "@/lib/catalog";
 import { FootprintDiagram } from "@/components/footprint-diagram";
 
 /**
@@ -26,7 +26,7 @@ import { FootprintDiagram } from "@/components/footprint-diagram";
  * 3. prefers-reduced-motion 이면 아무것도 하지 않는다
  *    정적 레이아웃이 이미 완성돼 있으므로 GSAP 을 건너뛰면 그만이다.
  */
-export function ProductShowcase() {
+export function ProductShowcase({ products }: { products: Product[] }) {
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
 
@@ -207,10 +207,10 @@ export function ProductShowcase() {
             01
           </span>
           <span className="mx-1">/</span>
-          <span>{String(equipment.length).padStart(2, "0")}</span>
+          <span>{String(products.length).padStart(2, "0")}</span>
         </div>
 
-        {equipment.map((product) => (
+        {products.map((product) => (
           <article
             key={product.slug}
             className="showcase-panel flex flex-col justify-center gap-10 border-b border-hairline py-16 last:border-b-0 md:grid md:grid-cols-2 md:items-center md:gap-16 md:border-b-0 md:px-12 md:py-0"

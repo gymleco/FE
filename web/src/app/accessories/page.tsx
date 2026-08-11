@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { accessories } from "@/lib/catalog";
+import { getProducts } from "@/lib/products-source";
 import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
 import { ProductCard } from "@/components/product-card";
@@ -13,7 +13,9 @@ export const metadata: Metadata = {
     "리프팅 벨트, 케이블 핸들, 고무 바닥재 등 헬스장 운영에 필요한 악세사리. 기구와 함께 주문하시면 배송·설치를 한 번에 진행합니다.",
 };
 
-export default function AccessoriesPage() {
+export default async function AccessoriesPage() {
+  const accessories = await getProducts("ACCESSORY");
+
   return (
     <>
       <SiteHeader />

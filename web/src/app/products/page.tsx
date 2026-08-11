@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
-import { equipment, type ProductCategory } from "@/lib/catalog";
+import type { ProductCategory } from "@/lib/catalog";
+import { getProducts } from "@/lib/products-source";
 import { CatalogGrid } from "@/components/catalog-grid";
 import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
@@ -20,7 +21,9 @@ const CATEGORIES: ProductCategory[] = [
   "CARDIO",
 ];
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getProducts("EQUIPMENT");
+
   return (
     <>
       <SiteHeader />
@@ -32,7 +35,7 @@ export default function ProductsPage() {
         />
 
         <section className="px-6 py-12 md:px-12">
-          <CatalogGrid products={equipment} categories={CATEGORIES} />
+          <CatalogGrid products={products} categories={CATEGORIES} />
         </section>
 
         <section className="border-t border-hairline px-6 py-16 md:px-12">

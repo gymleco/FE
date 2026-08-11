@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact-form";
+import { getProducts } from "@/lib/products-source";
 import { PageHeader } from "@/components/page-header";
 import { SiteHeader } from "@/components/site-header";
 
@@ -11,7 +12,9 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const products = await getProducts("EQUIPMENT");
+
   return (
     <>
       <SiteHeader />
@@ -23,7 +26,9 @@ export default function ContactPage() {
         />
 
         <section className="px-6 py-12 md:px-12">
-          <ContactForm />
+          <ContactForm
+            products={products.map((p) => ({ slug: p.slug, nameKo: p.nameKo }))}
+          />
         </section>
 
         <section className="border-t border-hairline px-6 py-12 md:px-12">

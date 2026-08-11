@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { parts } from "@/lib/catalog";
+import { getProducts } from "@/lib/products-source";
 import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
 import { ProductCard } from "@/components/product-card";
@@ -13,7 +13,9 @@ export const metadata: Metadata = {
     "짐레코 헬스기구 정품 부품. 케이블 와이어, 도르래, 패드, 중량 핀 등 소모품을 본사 직영으로 공급합니다.",
 };
 
-export default function PartsPage() {
+export default async function PartsPage() {
+  const parts = await getProducts("PART");
+
   return (
     <>
       <SiteHeader />

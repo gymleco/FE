@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { equipment } from "@/lib/catalog";
+
 
 const TYPES = [
   { value: "QUOTE", label: "견적 문의" },
@@ -38,7 +38,12 @@ type Status = "idle" | "sending" | "error" | "rateLimited";
  *  - 전송 실패 시 전화번호를 함께 안내한다. 폼이 죽었다고 문의를
  *    놓칠 수는 없다.
  */
-export function ContactForm() {
+export function ContactForm({
+  products,
+}: {
+  /** 관심 제품 체크박스. 서버에서 실데이터를 받아 넘긴다. */
+  products: { slug: string; nameKo: string }[];
+}) {
   const router = useRouter();
 
   /*
@@ -230,7 +235,7 @@ export function ContactForm() {
       <fieldset className="mt-8 border-none p-0">
         <legend className="text-sm text-ink-400">관심 제품</legend>
         <div className="mt-3 flex flex-wrap gap-2">
-          {equipment.map((product) => (
+          {products.map((product) => (
             <label key={product.slug} className="cursor-pointer">
               <input
                 type="checkbox"

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FloatingCta } from "@/components/floating-cta";
 import { ProductShowcase } from "@/components/home/product-showcase";
+import { getProducts } from "@/lib/products-source";
 
 /**
  * 메인 — 스크롤 드리븐 쇼케이스 (기획서 §3)
@@ -11,7 +12,9 @@ import { ProductShowcase } from "@/components/home/product-showcase";
  * 모든 텍스트는 서버에서 렌더된다. 애니메이션은 이미 존재하는 것을
  * 드러내는 방식이지, 없던 것을 만들어내는 방식이 아니다 (§3.4-5).
  */
-export default function Home() {
+export default async function Home() {
+  const products = await getProducts("EQUIPMENT");
+
   return (
     <>
       <main id="main" className="flex-1">
@@ -91,7 +94,7 @@ export default function Home() {
         </section>
 
         {/* ── 20~70% 제품 라인업 시퀀스 ★ 핵심 ────────────────── */}
-        <ProductShowcase />
+        <ProductShowcase products={products} />
 
         {/* ── 70% 신뢰 구간 ──────────────────────────────────── */}
         <section

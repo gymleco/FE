@@ -2,13 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import {
-  CATEGORY_LABEL,
-  catalog,
-  findProduct,
-  relatedProducts,
-  TYPICAL_FOOTPRINT_M2,
-} from "@/lib/catalog";
+import { CATEGORY_LABEL, TYPICAL_FOOTPRINT_M2 } from "@/lib/catalog";
+import { getAllProductSlugs, getProduct, getProducts } from "@/lib/products-source";
 import { FloatingCta } from "@/components/floating-cta";
 import { FootprintDiagram } from "@/components/footprint-diagram";
 import { ProductCard } from "@/components/product-card";
@@ -16,15 +11,16 @@ import { SampleBadge } from "@/components/sample-badge";
 import { SiteHeader } from "@/components/site-header";
 
 /** 빌드 시점에 전 제품 페이지를 만든다. 검색 유입이 핵심인 사이트다. */
-export function generateStaticParams() {
-  return catalog.map((product) => ({ slug: product.slug }));
+export async function generateStaticParams() {
+  const slugs = await getAllProductSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/products/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const product = findProduct(slug);
+  const product = await getProduct(slug);
 
   if (!product) {
     return { title: "제품을 찾을 수 없습니다" };
@@ -49,7 +45,7 @@ export default async function ProductDetailPage({
   params,
 }: PageProps<"/products/[slug]">) {
   const { slug } = await params;
-  const product = findProduct(slug);
+  const product = await getProduct(slug);
 
   if (!product) {
     notFound();
@@ -60,7 +56,10 @@ export default async function ProductDetailPage({
     product.widthMm != null &&
     product.depthMm != null;
 
-  const related = relatedProducts(product);
+  const siblings = await getProducts(product.type);
+  const related = siblings
+    .filter((p) => p.slug !== product.slug && p.category === product.category)
+    .slice(0, 3);
   const savedPercent =
     product.footprintM2 != null
       ? Math.round((1 - product.footprintM2 / TYPICAL_FOOTPRINT_M2) * 100)
