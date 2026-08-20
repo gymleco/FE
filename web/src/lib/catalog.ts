@@ -35,7 +35,10 @@ export interface Product {
   depthMm?: number;
   heightMm?: number;
   weightKg?: number;
+  /** 800px 렌디션. 사진이 없으면 설치 면적 다이어그램으로 대체된다. */
   imageUrl?: string;
+  /** 400/800/1600 렌디션 srcset — imageUrl 이 있을 때만 함께 채워진다 */
+  imageSrcSet?: string;
   isPlaceholder?: boolean;
 }
 

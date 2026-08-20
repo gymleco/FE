@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { CATEGORY_LABEL, type Product } from "@/lib/catalog";
-import { FootprintDiagram } from "@/components/footprint-diagram";
+import { ProductMedia } from "@/components/product-media";
 import { SampleBadge } from "@/components/sample-badge";
 
 /**
@@ -11,32 +11,22 @@ import { SampleBadge } from "@/components/sample-badge";
  * 부품·악세사리는 치수가 없으므로 다이어그램 대신 이름과 용도만 보여준다.
  */
 export function ProductCard({ product }: { product: Product }) {
-  const hasFootprint =
-    product.footprintM2 != null &&
-    product.widthMm != null &&
-    product.depthMm != null;
-
   return (
     <Link
       href={`/products/${product.slug}`}
       className="group flex flex-col gap-4 border border-hairline p-5 transition-colors hover:border-ink-400"
     >
-      <div className="aspect-4/3 bg-ink-900 p-4">
-        {hasFootprint ? (
-          <FootprintDiagram
-            nameKo={product.nameKo}
-            footprintM2={product.footprintM2!}
-            widthMm={product.widthMm!}
-            depthMm={product.depthMm!}
-            compact
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <span className="font-display text-[0.65rem] tracking-[0.2em] text-ink-600 uppercase">
-              {product.nameEn}
-            </span>
-          </div>
-        )}
+      <div className="aspect-4/3 overflow-hidden bg-ink-900 p-4">
+        <ProductMedia
+          product={product}
+          compactDiagram
+          /*
+           * 카드는 3열(데스크톱) → 2열(태블릿) → 1열(모바일).
+           * 데스크톱에서도 400px 을 넘지 않으므로 대부분 400 렌디션이 선택된다.
+           * 목록 한 화면에 12장이 뜨는데 여기서 1600 을 받으면 수 MB 가 된다.
+           */
+          sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
+        />
       </div>
 
       <div className="flex flex-1 flex-col gap-2">

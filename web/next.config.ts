@@ -91,11 +91,19 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
+    /*
+     * ★ port 를 반드시 넣는다.
+     *
+     * 로컬 MinIO 는 127.0.0.1:19000 인데 port 를 비우면 Next 가
+     * 기본 포트(80/443)만 허용해 이미지가 400 으로 막힌다.
+     * URL 에서 그대로 뽑아 쓰면 운영(포트 없음)에서도 자동으로 맞는다.
+     */
     remotePatterns: cdnUrl
       ? [
           {
             protocol: cdnUrl.protocol.replace(":", "") as "https" | "http",
             hostname: cdnUrl.hostname,
+            port: cdnUrl.port,
             pathname: "/**",
           },
         ]

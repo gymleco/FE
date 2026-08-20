@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# 템플릿은 올린다. 이게 없으면 클론한 사람이 어떤 환경변수가 필요한지 알 방법이 없다.
+!.env.example
+!.env.*.example
 
 # vercel
 .vercel

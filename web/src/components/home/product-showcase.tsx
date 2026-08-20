@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import { CATEGORY_LABEL, type Product } from "@/lib/catalog";
-import { FootprintDiagram } from "@/components/footprint-diagram";
+import { ProductMedia } from "@/components/product-media";
 
 /**
  * 제품 라인업 시퀀스 — 메인의 20~70% 구간 (기획서 §3.1)
@@ -210,7 +210,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
           <span>{String(products.length).padStart(2, "0")}</span>
         </div>
 
-        {products.map((product) => (
+        {products.map((product, index) => (
           <article
             key={product.slug}
             className="showcase-panel flex flex-col justify-center gap-10 border-b border-hairline py-16 last:border-b-0 md:grid md:grid-cols-2 md:items-center md:gap-16 md:border-b-0 md:px-12 md:py-0"
@@ -278,11 +278,15 @@ export function ProductShowcase({ products }: { products: Product[] }) {
 
             {/* ── 시각 자료 ── */}
             <div className="order-1 md:order-2">
-              <FootprintDiagram
-                nameKo={product.nameKo}
-                footprintM2={product.footprintM2!}
-                widthMm={product.widthMm!}
-                depthMm={product.depthMm!}
+              {/*
+               * 첫 패널만 즉시 로딩한다. 나머지는 스크롤로 도달해야 보이므로
+               * 지연 로딩이 맞다 — 14개 제품 사진을 첫 화면에서 전부 받으면
+               * "첫 화면 2.5초" 제약을 그대로 깨뜨린다 (기획서 §3.4).
+               */}
+              <ProductMedia
+                product={product}
+                priority={index === 0}
+                sizes="(min-width: 768px) 46vw, 92vw"
               />
             </div>
           </article>

@@ -42,15 +42,47 @@ function toProduct(api: ApiProduct): Product {
     heightMm: api.heightMm ?? undefined,
     weightKg: api.weightKg ?? undefined,
     imageUrl: api.thumbnailKey ? imageUrl(api.thumbnailKey) : undefined,
+    imageSrcSet: api.thumbnailKey ? imageSrcSet(api.thumbnailKey) : undefined,
     // API 에서 온 데이터에는 배지를 붙이지 않는다
     isPlaceholder: false,
   };
 }
 
-/** 스토리지 키 → 공개 URL. CDN 도메인이 바뀌어도 키는 그대로다. */
-export function imageUrl(key: string, size: 400 | 800 | 1600 = 800): string {
+export const RENDITIONS = [400, 800, 1600] as const;
+export type Rendition = (typeof RENDITIONS)[number];
+
+/**
+ * 스토리지 키 → 공개 URL.
+ *
+ * ── 키에 확장자가 붙어 있는 이유 ──
+ *
+ * 업로드된 이미지는 알파 채널이 있으면 PNG, 없으면 JPEG 로 재인코딩된다.
+ * 누끼(배경 제거) 이미지의 투명도가 이 사이트의 핵심이라 한 포맷으로
+ * 통일할 수 없다.
+ *
+ * 그래서 키가 `p/{uuid}.png` 형태로 확장자를 품고 있고,
+ * 실제 파일은 `p/{uuid}/800.png` 에 있다. 프론트가 확장자를 추측하거나
+ * 두 번 요청해 보는 일이 없도록 키 자체가 답을 갖고 있다.
+ */
+export function imageUrl(key: string, size: Rendition = 800): string {
   const base = process.env.NEXT_PUBLIC_CDN_ORIGIN?.replace(/\/$/, "") ?? "";
-  return `${base}/${key}/${size}.jpg`;
+  const dot = key.lastIndexOf(".");
+  // 확장자가 없는 옛 키도 깨지지 않게 jpg 로 가정한다
+  const prefix = dot > 0 ? key.slice(0, dot) : key;
+  const ext = dot > 0 ? key.slice(dot + 1) : "jpg";
+  return `${base}/${prefix}/${size}.${ext}`;
+}
+
+/**
+ * 반응형 srcset — 브라우저가 화면 폭에 맞는 렌디션만 받는다.
+ *
+ * 원본이 1600px 보다 작으면 큰 렌디션은 원본 크기에서 멈춘다(확대하지 않음).
+ * 즉 `1600w` 로 선언한 파일이 실제로는 1200px 일 수 있다.
+ * 브라우저가 그보다 나은 선택을 할 수 있는 것도 아니라 문제가 되지 않는다 —
+ * 어차피 그게 우리가 가진 가장 큰 이미지다.
+ */
+export function imageSrcSet(key: string): string {
+  return RENDITIONS.map((size) => `${imageUrl(key, size)} ${size}w`).join(", ");
 }
 
 const FALLBACK: Record<ProductType, Product[]> = {

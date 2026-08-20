@@ -7,6 +7,7 @@ import { getAllProductSlugs, getProduct, getProducts } from "@/lib/products-sour
 import { FloatingCta } from "@/components/floating-cta";
 import { FootprintDiagram } from "@/components/footprint-diagram";
 import { ProductCard } from "@/components/product-card";
+import { ProductMedia } from "@/components/product-media";
 import { SampleBadge } from "@/components/sample-badge";
 import { SiteHeader } from "@/components/site-header";
 
@@ -149,20 +150,19 @@ export default async function ProductDetailPage({
           </div>
 
           <div className="order-1 md:order-2">
-            {hasFootprint ? (
-              <FootprintDiagram
-                nameKo={product.nameKo}
-                footprintM2={product.footprintM2!}
-                widthMm={product.widthMm!}
-                depthMm={product.depthMm!}
-              />
-            ) : (
-              <div className="flex aspect-4/3 items-center justify-center border border-hairline bg-ink-900">
-                <span className="font-display text-xs tracking-[0.2em] text-ink-600 uppercase">
-                  {product.nameEn}
-                </span>
-              </div>
-            )}
+            {/*
+             * 사진이 있으면 사진, 없으면 설치 면적 다이어그램.
+             * 사진이 있어도 다이어그램은 아래 "설치 공간" 절에 그대로 남는다 —
+             * 이 사이트의 설득 논리가 그 숫자이므로 사진에 밀려 사라지면 안 된다.
+             *
+             * priority: 상세 페이지의 첫 화면 이미지다. LCP 요소이므로
+             * 지연 로딩하면 그대로 LCP 점수가 된다.
+             */}
+            <ProductMedia
+              product={product}
+              priority
+              sizes="(min-width: 768px) 46vw, 92vw"
+            />
           </div>
         </section>
 
@@ -172,7 +172,19 @@ export default async function ProductDetailPage({
             <h2 className="text-xl font-semibold tracking-tight text-ink-100">
               설치 공간
             </h2>
-            <p className="mt-4 max-w-2xl text-pretty text-ink-300">
+            <div className="mt-8 grid items-center gap-10 md:grid-cols-[minmax(0,22rem)_1fr]">
+              {/*
+               * 히어로가 사진에 넘어가면 다이어그램이 갈 곳이 없어진다.
+               * 이 절이 다이어그램의 고정 자리다 — 사진 유무와 무관하게
+               * 설치 면적은 반드시 시각적으로 한 번 나온다.
+               */}
+              <FootprintDiagram
+                nameKo={product.nameKo}
+                footprintM2={product.footprintM2!}
+                widthMm={product.widthMm!}
+                depthMm={product.depthMm!}
+              />
+              <p className="max-w-2xl text-pretty text-ink-300">
               같은 운동을 하는 일반 상업용 기구의 평균 설치 면적은{" "}
               <span className="tabular">{TYPICAL_FOOTPRINT_M2}m²</span> 입니다.{" "}
               {product.nameKo}는{" "}
@@ -182,7 +194,8 @@ export default async function ProductDetailPage({
               로 <span className="font-semibold text-signal">{savedPercent}%</span>{" "}
               적은 자리를 차지합니다. 기구 한 대의 차이는 작아 보이지만,
               라인업 전체로 보면 러닝머신 두세 대가 더 들어갑니다.
-            </p>
+              </p>
+            </div>
           </section>
         )}
 
