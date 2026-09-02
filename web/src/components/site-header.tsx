@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ThemeToggle } from "@/components/theme-toggle";
+
 const NAV = [
   { href: "/products", label: "제품" },
   { href: "/used", label: "중고" },
@@ -44,7 +46,7 @@ export function SiteHeader() {
 
         <nav
           aria-label="주요"
-          className="-mx-2 flex min-w-0 flex-1 gap-5 overflow-x-auto px-2 text-sm whitespace-nowrap"
+          className="no-scrollbar -mx-2 flex min-w-0 flex-1 gap-5 overflow-x-auto px-2 text-sm whitespace-nowrap"
         >
           {NAV.map((item) => (
             <Link
@@ -88,6 +90,8 @@ export function SiteHeader() {
             ))}
           </div>
         </div>
+
+        <ThemeToggle />
 
         <Link
           href="/contact"

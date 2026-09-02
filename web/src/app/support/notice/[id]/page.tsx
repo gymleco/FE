@@ -50,7 +50,7 @@ export default async function NoticeDetailPage({ params }: Params) {
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
             {notice.pinned && (
-              <span className="font-display border border-signal px-2 py-0.5 text-[0.62rem] font-bold tracking-wider text-signal">
+              <span className="font-display border border-accent px-2 py-0.5 text-[0.62rem] font-bold tracking-wider text-accent">
                 고정
               </span>
             )}
@@ -76,7 +76,7 @@ export default async function NoticeDetailPage({ params }: Params) {
               더 궁금하신 점은{" "}
               <Link
                 href="/contact"
-                className="text-signal underline underline-offset-4"
+                className="text-accent underline underline-offset-4"
               >
                 문의
               </Link>

@@ -110,7 +110,7 @@ export function FootprintDiagram({
           y={originY - productD}
           width={productW}
           height={productD}
-          className="fill-signal/85 stroke-signal"
+          className="fill-accent/85 stroke-accent"
           strokeWidth="0.6"
           style={{ transformBox: "fill-box", transformOrigin: "left bottom" }}
         />
@@ -119,9 +119,12 @@ export function FootprintDiagram({
       {!compact && (
         <figcaption className="mt-5 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-sm">
           <span className="flex items-center gap-2 text-ink-300">
+            {/* 범례 네모는 위 도형(fill-accent)과 같은 토큰을 쓴다. 하나만
+                signal 로 두면 밝은 테마에서 "노랑 = 짐레코" 라고 적어 놓고
+                정작 도형은 앰버가 되어 범례가 거짓말을 한다. */}
             <span
               aria-hidden="true"
-              className="inline-block size-3 rounded-xs bg-signal"
+              className="inline-block size-3 rounded-xs bg-accent"
             />
             짐레코{" "}
             <strong className="tabular font-semibold text-ink-100">
@@ -141,7 +144,7 @@ export function FootprintDiagram({
             <span className="tabular">{formatPyeong(TYPICAL_FOOTPRINT_M2)}</span>
           </span>
           {savedPercent > 0 && (
-            <span className="tabular font-display font-bold text-signal">
+            <span className="tabular font-display font-bold text-accent">
               −{savedPercent}%
             </span>
           )}

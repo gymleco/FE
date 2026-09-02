@@ -20,7 +20,7 @@ export function PageHeader({
 }) {
   return (
     <div className="border-b border-hairline px-6 pt-14 pb-10 md:px-12 md:pt-20 md:pb-14">
-      <p className="font-display text-[0.7rem] tracking-[0.35em] text-signal uppercase">
+      <p className="font-display text-[0.7rem] tracking-[0.35em] text-accent uppercase">
         {eyebrow}
       </p>
       <div className="mt-5 flex flex-wrap items-end justify-between gap-6">

@@ -166,7 +166,7 @@ export function LineupDisc({ products }: { products: Product[] }) {
         onPointerUp={onUp}
         onPointerCancel={onUp}
         onKeyDown={onKey}
-        className="relative aspect-square w-full cursor-grab touch-pan-y select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-signal active:cursor-grabbing"
+        className="relative aspect-square w-full cursor-grab touch-pan-y select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing"
       >
         {/* 바닥 원판 — 쇼케이스의 설치 면적 격자와 같은 어휘를 쓴다 */}
         <svg
@@ -176,16 +176,16 @@ export function LineupDisc({ products }: { products: Product[] }) {
         >
           <defs>
             <radialGradient id="disc-face" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#ffd400" stopOpacity="0.10" />
-              <stop offset="65%" stopColor="#ffd400" stopOpacity="0.03" />
-              <stop offset="100%" stopColor="#ffd400" stopOpacity="0" />
+              <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.14" />
+              <stop offset="65%" stopColor="var(--color-accent)" stopOpacity="0.05" />
+              <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
             </radialGradient>
           </defs>
           <g transform={`translate(50 62) scale(1 ${TILT})`}>
             <circle r="46" fill="url(#disc-face)" />
-            <circle r="46" fill="none" stroke="#3a4046" strokeWidth="0.5" />
-            <circle r="31" fill="none" stroke="#23272c" strokeWidth="0.4" />
-            <circle r="16" fill="none" stroke="#23272c" strokeWidth="0.4" />
+            <circle r="46" fill="none" stroke="var(--color-ink-600)" strokeWidth="0.5" />
+            <circle r="31" fill="none" stroke="var(--color-ink-700)" strokeWidth="0.4" />
+            <circle r="16" fill="none" stroke="var(--color-ink-700)" strokeWidth="0.4" />
             {/*
               눈금 — 제품이 놓이는 자리.
 
@@ -204,7 +204,7 @@ export function LineupDisc({ products }: { products: Product[] }) {
                   y1={r(Math.cos(t) * 43)}
                   x2={r(Math.sin(t) * 46)}
                   y2={r(Math.cos(t) * 46)}
-                  stroke="#3a4046"
+                  stroke="var(--color-ink-600)"
                   strokeWidth="0.6"
                 />
               );
@@ -264,7 +264,7 @@ export function LineupDisc({ products }: { products: Product[] }) {
           {items[front].nameKo}
         </p>
         {items[front].footprintM2 != null && (
-          <p className="tabular font-display mt-0.5 text-sm font-bold text-signal">
+          <p className="tabular font-display mt-0.5 text-sm font-bold text-accent">
             설치 면적 {items[front].footprintM2}m² ·{" "}
             {formatPyeong(items[front].footprintM2!)}
           </p>
@@ -313,7 +313,7 @@ function DiscItem({ product }: { product: Product }) {
           draggable={false}
           loading="lazy"
           decoding="async"
-          className="h-auto w-full object-contain drop-shadow-[0_18px_28px_rgba(0,0,0,0.65)]"
+          className="h-auto w-full object-contain drop-shadow-[var(--shadow-lift)]"
         />
       </div>
     );
@@ -339,7 +339,7 @@ function DiscItem({ product }: { product: Product }) {
         납작해진 타일 위로 원래 높이만큼 빈 자리가 남고 라벨이 떠 버렸다.
       */}
       <div
-        className="w-full rounded-[1px] bg-signal/90 shadow-[0_10px_22px_rgba(0,0,0,0.6)]"
+        className="w-full rounded-[1px] bg-signal/90 shadow-[var(--shadow-lift-sm)]"
         style={{ aspectRatio: `${ratio / TILT}` }}
       />
     </div>

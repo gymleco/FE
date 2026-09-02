@@ -31,7 +31,7 @@ export default async function NoticePage() {
       <SiteHeader />
       <main id="main" className="flex-1">
         <section className="border-b border-hairline px-6 py-20 md:px-12 md:py-28">
-          <p className="font-display text-[0.7rem] tracking-[0.35em] text-signal uppercase">
+          <p className="font-display text-[0.7rem] tracking-[0.35em] text-accent uppercase">
             Notice
           </p>
           <h1 className="mt-5 text-[clamp(2rem,5vw,3.25rem)] leading-tight font-bold tracking-tight text-ink-100">
@@ -55,7 +55,7 @@ export default async function NoticePage() {
                   급하신 내용은{" "}
                   <Link
                     href="/contact"
-                    className="text-signal underline underline-offset-4"
+                    className="text-accent underline underline-offset-4"
                   >
                     문의
                   </Link>
@@ -68,10 +68,10 @@ export default async function NoticePage() {
                   <li key={n.id} className="border-b border-hairline">
                     <Link
                       href={`/support/notice/${n.id}`}
-                      className="flex items-baseline gap-4 py-5 transition-colors hover:text-signal"
+                      className="flex items-baseline gap-4 py-5 transition-colors hover:text-accent"
                     >
                       {n.pinned && (
-                        <span className="font-display shrink-0 border border-signal px-1.5 py-0.5 text-[0.6rem] font-bold tracking-wider text-signal">
+                        <span className="font-display shrink-0 border border-accent px-1.5 py-0.5 text-[0.6rem] font-bold tracking-wider text-accent">
                           고정
                         </span>
                       )}

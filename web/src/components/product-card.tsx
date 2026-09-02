@@ -32,7 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-display text-[0.62rem] tracking-[0.25em] text-signal uppercase">
+          <span className="font-display text-[0.62rem] tracking-[0.25em] text-accent uppercase">
             {CATEGORY_LABEL[product.category]}
           </span>
           {product.isPlaceholder && <SampleBadge />}
@@ -46,7 +46,7 @@ export function ProductCard({ product }: { product: Product }) {
         </p>
 
         {product.footprintM2 != null && (
-          <p className="tabular font-display pt-1 text-sm font-bold text-signal">
+          <p className="tabular font-display pt-1 text-sm font-bold text-accent">
             설치 면적 {product.footprintM2} m²
             <span className="ml-1.5 font-medium text-ink-400">
               {formatPyeong(product.footprintM2)}

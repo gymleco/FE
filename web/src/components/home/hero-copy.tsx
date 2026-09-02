@@ -131,7 +131,7 @@ export function HeroCopy() {
       {/* 높이를 고정한다 — 문구마다 길이가 달라 그대로 두면 원판이 위아래로 튄다 */}
       <div className="[grid-area:head] lg:min-h-[15.5rem]" {...pause}>
         <div {...fade}>
-          <p className="font-display text-[0.7rem] tracking-[0.4em] text-signal uppercase">
+          <p className="font-display text-[0.7rem] tracking-[0.4em] text-accent uppercase">
             {slide.eyebrow}
           </p>
 

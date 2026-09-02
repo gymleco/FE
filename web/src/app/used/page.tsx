@@ -32,7 +32,7 @@ export default function UsedPage() {
           aside={
             <span className="tabular font-display text-sm text-ink-400">
               현재 판매중{" "}
-              <span className="text-signal">{availableCount}</span> 건
+              <span className="text-accent">{availableCount}</span> 건
             </span>
           }
         />
@@ -46,7 +46,7 @@ export default function UsedPage() {
             {(["A", "B", "C"] as const).map((grade) => (
               <div key={grade} className="border border-hairline p-4">
                 <dt className="flex items-center gap-2">
-                  <span className="font-display flex size-7 items-center justify-center rounded-full border border-signal text-sm font-bold text-signal">
+                  <span className="font-display flex size-7 items-center justify-center rounded-full border border-accent text-sm font-bold text-accent">
                     {grade}
                   </span>
                   <span className="font-semibold text-ink-100">
@@ -138,7 +138,7 @@ function UsedCard({ item }: { item: UsedItem }) {
       }
     >
       <div className="flex aspect-4/3 items-center justify-center bg-ink-900">
-        <span className="font-display text-[0.65rem] tracking-[0.2em] text-ink-600 uppercase">
+        <span className="font-display text-[0.65rem] tracking-[0.2em] text-ink-400 uppercase">
           {item.modelName}
         </span>
       </div>
@@ -171,7 +171,7 @@ function UsedCard({ item }: { item: UsedItem }) {
           {item.description}
         </p>
 
-        <p className="tabular pt-1 font-semibold text-signal">
+        <p className="tabular pt-1 font-semibold text-accent">
           {item.priceKrw
             ? `${item.priceKrw.toLocaleString("ko-KR")}원`
             : "가격 문의"}
@@ -181,7 +181,7 @@ function UsedCard({ item }: { item: UsedItem }) {
       {!sold && (
         <Link
           href={`/contact?type=USED&item=${item.slug}`}
-          className="border-t border-hairline pt-3 text-sm font-medium text-ink-100 transition-colors hover:text-signal"
+          className="border-t border-hairline pt-3 text-sm font-medium text-ink-100 transition-colors hover:text-accent"
         >
           이 매물 문의하기 →
         </Link>

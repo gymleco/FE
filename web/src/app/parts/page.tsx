@@ -78,7 +78,7 @@ export default async function PartsPage() {
 function Step({ n, title, body }: { n: string; title: string; body: string }) {
   return (
     <div className="border-t border-hairline pt-5">
-      <span className="font-display text-sm font-bold text-signal">{n}</span>
+      <span className="font-display text-sm font-bold text-accent">{n}</span>
       <h3 className="mt-2 font-semibold text-ink-100">{title}</h3>
       <p className="mt-2 text-sm text-pretty text-ink-400">{body}</p>
     </div>

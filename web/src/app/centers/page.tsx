@@ -32,7 +32,7 @@ export default function CentersPage() {
             <section className="px-6 py-12 md:px-12">
               {regions.map((region) => (
                 <div key={region} className="mb-14 last:mb-0">
-                  <h2 className="font-display border-b border-hairline pb-3 text-sm tracking-[0.25em] text-signal uppercase">
+                  <h2 className="font-display border-b border-hairline pb-3 text-sm tracking-[0.25em] text-accent uppercase">
                     {region}
                   </h2>
                   <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -42,7 +42,7 @@ export default function CentersPage() {
                         className="flex flex-col gap-4 border border-hairline p-5"
                       >
                         <div className="flex aspect-4/3 items-center justify-center bg-ink-900">
-                          <span className="font-display text-[0.65rem] tracking-[0.2em] text-ink-600 uppercase">
+                          <span className="font-display text-[0.65rem] tracking-[0.2em] text-ink-400 uppercase">
                             Center Photo
                           </span>
                         </div>
@@ -92,7 +92,7 @@ export default function CentersPage() {
                                     <li key={slug}>
                                       <Link
                                         href={`/products/${slug}`}
-                                        className="inline-block rounded-full border border-ink-700 px-2.5 py-1 text-xs text-ink-300 transition-colors hover:border-signal hover:text-signal"
+                                        className="inline-block rounded-full border border-ink-700 px-2.5 py-1 text-xs text-ink-300 transition-colors hover:border-accent hover:text-accent"
                                       >
                                         {product.nameKo}
                                       </Link>
@@ -180,7 +180,7 @@ export default function CentersPage() {
 function Benefit({ title, body }: { title: string; body: string }) {
   return (
     <div className="border-t border-hairline pt-5">
-      <dt className="font-display text-sm tracking-[0.18em] text-signal uppercase">
+      <dt className="font-display text-sm tracking-[0.18em] text-accent uppercase">
         {title}
       </dt>
       <dd className="mt-3 text-sm text-pretty text-ink-300">{body}</dd>

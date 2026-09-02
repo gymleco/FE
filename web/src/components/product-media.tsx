@@ -76,7 +76,7 @@ export function ProductMedia({
 
   return (
     <div className="flex aspect-4/3 items-center justify-center bg-ink-900">
-      <span className="font-display text-[0.65rem] tracking-[0.2em] text-ink-600 uppercase">
+      <span className="font-display text-[0.65rem] tracking-[0.2em] text-ink-400 uppercase">
         {product.nameEn}
       </span>
     </div>

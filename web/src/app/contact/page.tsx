@@ -34,7 +34,7 @@ export default async function ContactPage() {
         <section className="border-t border-hairline px-6 py-12 md:px-12">
           <dl className="grid gap-8 md:grid-cols-3">
             <div>
-              <dt className="font-display text-[0.68rem] tracking-[0.22em] text-signal uppercase">
+              <dt className="font-display text-[0.68rem] tracking-[0.22em] text-accent uppercase">
                 응대 시간
               </dt>
               <dd className="mt-3 text-sm text-ink-300">
@@ -42,7 +42,7 @@ export default async function ContactPage() {
               </dd>
             </div>
             <div>
-              <dt className="font-display text-[0.68rem] tracking-[0.22em] text-signal uppercase">
+              <dt className="font-display text-[0.68rem] tracking-[0.22em] text-accent uppercase">
                 무료 시연
               </dt>
               <dd className="mt-3 text-sm text-ink-300">
@@ -50,7 +50,7 @@ export default async function ContactPage() {
               </dd>
             </div>
             <div>
-              <dt className="font-display text-[0.68rem] tracking-[0.22em] text-signal uppercase">
+              <dt className="font-display text-[0.68rem] tracking-[0.22em] text-accent uppercase">
                 개인정보
               </dt>
               <dd className="mt-3 text-sm text-ink-300">

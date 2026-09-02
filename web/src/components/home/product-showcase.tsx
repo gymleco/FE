@@ -269,7 +269,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
             {/* ── 텍스트 ── */}
             <div className="order-2 md:order-1">
               <div className="flex items-center gap-3">
-                <span className="font-display text-[0.65rem] tracking-[0.28em] text-signal uppercase">
+                <span className="font-display text-[0.65rem] tracking-[0.28em] text-accent uppercase">
                   {CATEGORY_LABEL[product.category]}
                 </span>
                 {product.isPlaceholder && (
@@ -299,7 +299,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
                     평을 병기한다. 사장님이 임대차 계약서에서 보는 단위는
                     m² 가 아니라 평이라, m² 만으로는 크기 감이 오지 않는다.
                   */}
-                  <dd className="tabular font-display mt-1 text-2xl font-bold text-signal">
+                  <dd className="tabular font-display mt-1 text-2xl font-bold text-accent">
                     {/* 숫자도 앞 제품 값에서 굴러온다. data-area 가 목표값이다. */}
                     <span data-area={product.footprintM2}>
                       {product.footprintM2}
@@ -330,7 +330,7 @@ export function ProductShowcase({ products }: { products: Product[] }) {
 
               <Link
                 href={`/products/${product.slug}`}
-                className="mt-8 inline-flex items-center gap-2 border-b border-ink-600 pb-1 text-sm font-medium text-ink-100 transition-colors hover:border-signal hover:text-signal"
+                className="mt-8 inline-flex items-center gap-2 border-b border-ink-600 pb-1 text-sm font-medium text-ink-100 transition-colors hover:border-accent hover:text-accent"
               >
                 제품 자세히 보기
                 <span aria-hidden="true">→</span>

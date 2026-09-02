@@ -89,7 +89,7 @@ export default async function ProductDetailPage({
         <section className="grid gap-10 px-6 pt-10 pb-16 md:grid-cols-2 md:gap-16 md:px-12">
           <div className="order-2 md:order-1">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="font-display text-[0.65rem] tracking-[0.28em] text-signal uppercase">
+              <span className="font-display text-[0.65rem] tracking-[0.28em] text-accent uppercase">
                 {CATEGORY_LABEL[product.category]}
               </span>
               {product.isPlaceholder && <SampleBadge />}
@@ -109,7 +109,7 @@ export default async function ProductDetailPage({
             {hasFootprint && (
               <dl className="mt-8 divide-y divide-hairline border-y border-hairline">
                 <SpecRow label="설치 면적">
-                  <span className="tabular font-display text-xl font-bold text-signal">
+                  <span className="tabular font-display text-xl font-bold text-accent">
                     {product.footprintM2} m²
                   </span>
                 </SpecRow>
@@ -188,10 +188,10 @@ export default async function ProductDetailPage({
               같은 운동을 하는 일반 상업용 기구의 평균 설치 면적은{" "}
               <span className="tabular">{TYPICAL_FOOTPRINT_M2}m²</span> 입니다.{" "}
               {product.nameKo}는{" "}
-              <span className="tabular font-semibold text-signal">
+              <span className="tabular font-semibold text-accent">
                 {product.footprintM2}m²
               </span>{" "}
-              로 <span className="font-semibold text-signal">{savedPercent}%</span>{" "}
+              로 <span className="font-semibold text-accent">{savedPercent}%</span>{" "}
               적은 자리를 차지합니다. 기구 한 대의 차이는 작아 보이지만,
               라인업 전체로 보면 러닝머신 두세 대가 더 들어갑니다.
               </p>

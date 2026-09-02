@@ -28,7 +28,7 @@ export default async function FaqPage() {
       <SiteHeader />
       <main id="main" className="flex-1">
         <section className="border-b border-hairline px-6 py-20 md:px-12 md:py-28">
-          <p className="font-display text-[0.7rem] tracking-[0.35em] text-signal uppercase">
+          <p className="font-display text-[0.7rem] tracking-[0.35em] text-accent uppercase">
             FAQ
           </p>
           <h1 className="mt-5 text-[clamp(2rem,5vw,3.25rem)] leading-tight font-bold tracking-tight text-ink-100">
@@ -36,7 +36,7 @@ export default async function FaqPage() {
           </h1>
           <p className="mt-6 max-w-2xl text-pretty text-ink-300">
             여기서 답을 찾지 못하셨다면{" "}
-            <Link href="/contact" className="text-signal underline underline-offset-4">
+            <Link href="/contact" className="text-accent underline underline-offset-4">
               문의
             </Link>
             로 보내주세요. 영업일 기준 하루 안에 답변드립니다.
@@ -63,7 +63,7 @@ export default async function FaqPage() {
                       key={faq.id}
                       className="group border-b border-hairline"
                     >
-                      <summary className="flex cursor-pointer list-none items-start gap-4 py-5 text-ink-100 transition-colors marker:content-none hover:text-signal focus-visible:outline-2 focus-visible:outline-signal">
+                      <summary className="flex cursor-pointer list-none items-start gap-4 py-5 text-ink-100 transition-colors marker:content-none hover:text-accent focus-visible:outline-2 focus-visible:outline-accent">
                         <span className="flex-1 text-pretty">{faq.question}</span>
                         <svg
                           className="mt-1 shrink-0 text-ink-400 transition-transform group-open:rotate-45"

@@ -17,7 +17,7 @@ export default function ContactDonePage() {
         <div className="mx-auto max-w-lg text-center">
           <p
             aria-hidden="true"
-            className="font-display text-4xl font-black text-signal"
+            className="font-display text-4xl font-black text-accent"
           >
             ✓
           </p>

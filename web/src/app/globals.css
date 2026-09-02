@@ -15,17 +15,26 @@
   --color-ink-900: #0e1012;
   --color-ink-800: #16191c;
   --color-ink-700: #23272c;
-  --color-ink-600: #3a4046;
+  --color-ink-600: #3a4046;  /* 테두리 전용 — 글자로 쓰면 대비가 2:1 도 안 된다 */
   --color-ink-400: #7d848c;
   --color-ink-300: #a8aeb6;
   --color-ink-100: #e6e8ea;
   --color-paper: #f6f6f4;
   --color-paper-dim: #ececea;
 
-  /* ── 시그널 — 문의 CTA 전용. 남발하면 힘을 잃는다 ── */
-  --color-signal: #ffd400;
+  /* ── 시그널 — 문의 CTA 전용. 남발하면 힘을 잃는다 ──
+
+     ★ "칠하는 노랑" 과 "글자로 쓰는 노랑" 을 나눠 둔다.
+       같은 토큰을 양쪽에 쓰면 밝은 테마에서 무너진다. 흰 바탕 위의
+       #ffd400 은 대비가 1.33:1 이라 글자로는 읽히지 않는다.
+       바탕으로 칠할 때는 그대로 두고(그 위에 signal-ink 를 얹으니 13.8:1),
+       글자·테두리로 쓸 때만 accent 를 쓴다. */
+  --color-signal: #ffd400;       /* 칠한다 — 버튼 · 배지의 바탕 */
   --color-signal-hover: #ffe14d;
-  --color-signal-ink: #0a0b0c;
+  --color-signal-ink: #0a0b0c;   /* 그 노랑 위에 얹는 글자 */
+
+  --color-accent: #ffd400;       /* 글자 · 테두리 · 포커스 링 */
+  --color-accent-hover: #ffe14d;
 
   /* ── 보조 ── */
   --color-steel: #2b5f8c;
@@ -51,6 +60,89 @@
   /* ── 모션 ── */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   밝은 테마
+
+   ★ ink 눈금의 숫자는 "어두움" 이 아니라 "바탕에서의 깊이" 로 읽는다.
+     950 은 언제나 페이지 바탕, 100 은 언제나 본문 글자다. 그래서 두 테마가
+     같은 유틸리티(bg-ink-950 · text-ink-100)를 그대로 쓴다.
+     역할 이름으로 전부 바꾸는 방법도 있지만 400곳 가까이를 손봐야 하고,
+     그 과정에서 놓치는 한 곳이 곧 안 보이는 글자가 된다.
+
+   ★ 대비는 눈으로 고르지 않고 계산해서 넣었다 (흰 바탕 #f7f7f5 기준).
+     ink-100 16.9:1 · ink-300 9.2:1 · ink-400 4.9:1 · accent 5.5:1
+     ink-600 은 구분선 전용이라 대비 기준을 적용하지 않는다.
+
+   ★ 기본값은 어두운 테마다. OS 설정을 따라가지 않는다.
+     이 사이트의 첫인상 자체가 암전에서 시작하는 연출이라, 설정에 따라
+     누구에겐 밝게 열리면 의도한 장면이 사라진다. 밝은 테마는 "오래 볼 때
+     눈이 편한 쪽" 으로 고르는 것이지 기본 모습이 아니다.
+     OS 설정을 따르게 하려면 아래 선택자에 미디어 쿼리를 하나 더하면 된다.
+   ══════════════════════════════════════════════════════════════ */
+
+:root[data-theme="light"] {
+  --color-ink-950: #f7f7f5;  /* 페이지 바탕 */
+  --color-ink-900: #f0f0ed;
+  --color-ink-800: #e6e6e2;
+  --color-ink-700: #d6d6d1;
+  --color-ink-600: #adb2b8;  /* 구분선 · 흐린 눈금 */
+  --color-ink-400: #666c74;  /* 라벨 · 캡션 */
+  --color-ink-300: #3f444b;  /* 보조 글자 */
+  --color-ink-100: #14161a;  /* 본문 글자 */
+
+  /* 노랑 버튼은 밝은 바탕에서도 그대로 둔다 — 브랜드가 거기에 있다.
+     글자로 쓰는 노랑만 읽히는 값으로 내린다. */
+  --color-accent: #8a5a00;
+  --color-accent-hover: #6b4600;
+
+  --color-hairline: rgb(8 9 10 / 0.14);
+  --color-hairline-dark: rgb(255 255 255 / 0.14);
+}
+
+/* 가로로 넘치는 메뉴의 스크롤바를 감춘다.
+
+   밝은 테마에서 OS 스크롤바가 헤더 한가운데 굵은 띠로 드러난다.
+   항목이 잘려 보이는 것 자체가 "더 있다" 는 신호라 막대는 필요 없다.
+   스크롤 자체는 그대로 되고, 키보드 · 휠 · 터치 모두 동작한다. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 테마 토글의 아이콘 — 어느 쪽을 보일지 CSS 가 고른다.
+
+   JS 상태로 고르면 수화 전까지 반대쪽 아이콘이 잠깐 보인다.
+   기본(속성 없음)은 어두운 테마이므로 "해" 가 보이고, 누르면 밝아진다. */
+.theme-icon-dark { display: none; }
+.theme-icon-light { display: block; }
+:root[data-theme="light"] .theme-icon-dark { display: block; }
+:root[data-theme="light"] .theme-icon-light { display: none; }
+
+/* 들어올린 물체의 그림자 — 밝은 바탕에서 검정 65% 는 때가 낀 것처럼 보인다 */
+:root {
+  --shadow-lift: 0 18px 28px rgb(0 0 0 / 0.65);
+  --shadow-lift-sm: 0 10px 22px rgb(0 0 0 / 0.6);
+}
+:root[data-theme="light"] {
+  --shadow-lift: 0 14px 24px rgb(8 9 10 / 0.20);
+  --shadow-lift-sm: 0 8px 16px rgb(8 9 10 / 0.16);
+}
+
+/* 테마를 바꾸는 순간 화면 전체가 튀지 않도록 바탕색만 부드럽게 넘긴다.
+   글자색까지 전환하면 잔상이 생겨 오히려 지저분하다. */
+html,
+body {
+  transition: background-color 220ms var(--ease-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body { transition: none; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -81,7 +173,7 @@ body {
 
 /* ── 포커스 — 키보드 사용자가 지금 어디 있는지 항상 보여야 한다 ── */
 :focus-visible {
-  outline: 2px solid var(--color-signal);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 2px;
 }

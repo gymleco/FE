@@ -76,13 +76,13 @@ export default function AboutPage() {
               </p>
               <ul className="mt-6 space-y-3 text-ink-300">
                 <li className="flex gap-3">
-                  <span aria-hidden="true" className="text-signal">
+                  <span aria-hidden="true" className="text-accent">
                     —
                   </span>
                   <span>중간 마진이 붙지 않습니다</span>
                 </li>
                 <li className="flex gap-3">
-                  <span aria-hidden="true" className="text-signal">
+                  <span aria-hidden="true" className="text-accent">
                     —
                   </span>
                   <span>
@@ -90,7 +90,7 @@ export default function AboutPage() {
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span aria-hidden="true" className="text-signal">
+                  <span aria-hidden="true" className="text-accent">
                     —
                   </span>
                   <span>
@@ -156,7 +156,7 @@ function Pillar({ en, ko, body }: { en: string; ko: string; body: string }) {
   return (
     <div className="border-t border-hairline pt-6">
       <dt>
-        <span className="font-display block text-sm tracking-[0.22em] text-signal uppercase">
+        <span className="font-display block text-sm tracking-[0.22em] text-accent uppercase">
           {en}
         </span>
         <span className="mt-2 block text-lg font-bold text-ink-100">{ko}</span>

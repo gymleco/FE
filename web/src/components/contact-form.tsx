@@ -174,7 +174,7 @@ export function ContactForm({
                 onChange={() => setType(option.value)}
                 className="peer sr-only"
               />
-              <span className="inline-block rounded-full border border-ink-700 px-4 py-1.5 text-sm text-ink-300 transition-colors peer-checked:border-signal peer-checked:bg-signal peer-checked:font-semibold peer-checked:text-signal-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-signal">
+              <span className="inline-block rounded-full border border-ink-700 px-4 py-1.5 text-sm text-ink-300 transition-colors peer-checked:border-accent peer-checked:bg-signal peer-checked:font-semibold peer-checked:text-signal-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent">
                 {option.label}
               </span>
             </label>
@@ -212,7 +212,7 @@ export function ContactForm({
             id="region"
             name="region"
             defaultValue=""
-            className="border border-ink-700 bg-transparent px-3 py-2.5 text-ink-100 transition-colors focus:border-signal"
+            className="border border-ink-700 bg-transparent px-3 py-2.5 text-ink-100 transition-colors focus:border-accent"
           >
             <option value="">선택</option>
             {REGIONS.map((region) => (
@@ -245,7 +245,7 @@ export function ContactForm({
                 onChange={() => toggleProduct(product.slug)}
                 className="peer sr-only"
               />
-              <span className="inline-block rounded-full border border-ink-700 px-3.5 py-1.5 text-sm text-ink-300 transition-colors peer-checked:border-ink-100 peer-checked:text-ink-100 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-signal">
+              <span className="inline-block rounded-full border border-ink-700 px-3.5 py-1.5 text-sm text-ink-300 transition-colors peer-checked:border-ink-100 peer-checked:text-ink-100 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent">
                 {product.nameKo}
               </span>
             </label>
@@ -262,7 +262,7 @@ export function ContactForm({
           id="message"
           name="message"
           rows={5}
-          className="border border-ink-700 bg-transparent px-3 py-2.5 text-ink-100 transition-colors focus:border-signal"
+          className="border border-ink-700 bg-transparent px-3 py-2.5 text-ink-100 transition-colors focus:border-accent"
           placeholder="공간 상황이나 예산, 오픈 예정일 등을 적어주시면 더 정확히 안내드릴 수 있습니다."
         />
       </div>
@@ -367,7 +367,7 @@ function Field({
       <label htmlFor={name} className="text-sm text-ink-400">
         {label}
         {required && (
-          <span aria-hidden="true" className="ml-1 text-signal">
+          <span aria-hidden="true" className="ml-1 text-accent">
             *
           </span>
         )}
@@ -381,7 +381,7 @@ function Field({
         className={
           error
             ? "border border-danger bg-transparent px-3 py-2.5 text-ink-100"
-            : "border border-ink-700 bg-transparent px-3 py-2.5 text-ink-100 transition-colors focus:border-signal"
+            : "border border-ink-700 bg-transparent px-3 py-2.5 text-ink-100 transition-colors focus:border-accent"
         }
         {...rest}
       />

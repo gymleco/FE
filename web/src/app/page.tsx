@@ -112,7 +112,7 @@ export default async function Home() {
 
           <dl className="mt-14 grid gap-12 md:grid-cols-3">
             <div>
-              <dt className="font-display text-sm tracking-[0.2em] text-signal uppercase">
+              <dt className="font-display text-sm tracking-[0.2em] text-accent uppercase">
                 Direct from Sweden
               </dt>
               <dd className="mt-4 text-pretty text-ink-300">
@@ -121,7 +121,7 @@ export default async function Home() {
               </dd>
             </div>
             <div>
-              <dt className="font-display text-sm tracking-[0.2em] text-signal uppercase">
+              <dt className="font-display text-sm tracking-[0.2em] text-accent uppercase">
                 Space Efficient
               </dt>
               <dd className="mt-4 text-pretty text-ink-300">
@@ -130,7 +130,7 @@ export default async function Home() {
               </dd>
             </div>
             <div>
-              <dt className="font-display text-sm tracking-[0.2em] text-signal uppercase">
+              <dt className="font-display text-sm tracking-[0.2em] text-accent uppercase">
                 Official Center
               </dt>
               <dd className="mt-4 text-pretty text-ink-300">
@@ -145,7 +145,7 @@ export default async function Home() {
               기구를 직접 써보고 결정하시는 편이 빠릅니다.{" "}
               <Link
                 href="/contact"
-                className="border-b border-signal text-signal hover:text-signal-hover"
+                className="border-b border-accent text-accent hover:text-accent-hover"
               >
                 무료 시연을 신청
               </Link>

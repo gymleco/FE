@@ -34,7 +34,7 @@ export default function PrivacyPage() {
         />
 
         <div className="max-w-3xl px-6 py-12 md:px-12">
-          <p className="border border-signal/40 bg-signal/5 p-4 text-sm text-ink-300">
+          <p className="border border-accent/40 bg-signal/5 p-4 text-sm text-ink-300">
             현재 문서는 초안입니다. 사업자 정보와 개인정보 보호책임자 지정 후
             정식 게시됩니다.
           </p>

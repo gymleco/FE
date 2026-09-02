@@ -36,7 +36,7 @@ export default function NewsPage() {
             새 소식이 올라올 때까지, 궁금하신 내용은{" "}
             <Link
               href="/contact"
-              className="border-b border-signal text-signal hover:text-signal-hover"
+              className="border-b border-accent text-accent hover:text-accent-hover"
             >
               문의
             </Link>
