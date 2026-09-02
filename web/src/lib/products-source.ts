@@ -43,6 +43,8 @@ function toProduct(api: ApiProduct): Product {
     weightKg: api.weightKg ?? undefined,
     imageUrl: api.thumbnailKey ? imageUrl(api.thumbnailKey) : undefined,
     imageSrcSet: api.thumbnailKey ? imageSrcSet(api.thumbnailKey) : undefined,
+    cutoutUrl: api.cutoutKey ? imageUrl(api.cutoutKey) : undefined,
+    cutoutSrcSet: api.cutoutKey ? imageSrcSet(api.cutoutKey) : undefined,
     // API 에서 온 데이터에는 배지를 붙이지 않는다
     isPlaceholder: false,
   };

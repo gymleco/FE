@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { CATEGORY_LABEL, type Product } from "@/lib/catalog";
 import { ProductMedia } from "@/components/product-media";
+import { formatPyeong } from "@/lib/area";
 import { SampleBadge } from "@/components/sample-badge";
 
 /**
@@ -47,6 +48,9 @@ export function ProductCard({ product }: { product: Product }) {
         {product.footprintM2 != null && (
           <p className="tabular font-display pt-1 text-sm font-bold text-signal">
             설치 면적 {product.footprintM2} m²
+            <span className="ml-1.5 font-medium text-ink-400">
+              {formatPyeong(product.footprintM2)}
+            </span>
           </p>
         )}
       </div>

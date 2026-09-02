@@ -1,4 +1,5 @@
 import { TYPICAL_FOOTPRINT_M2 } from "@/lib/catalog";
+import { formatPyeong } from "@/lib/area";
 
 /**
  * 설치 면적 다이어그램
@@ -93,14 +94,25 @@ export function FootprintDiagram({
           strokeDasharray="2 1.5"
         />
 
-        {/* 이 제품의 실제 설치 면적 */}
+        {/*
+          이 제품의 실제 설치 면적.
+
+          data-fp-rect 는 쇼케이스가 잡는 손잡이다. 제품이 넘어갈 때
+          앞 제품 크기에서 이 크기로 자라거나 줄어드는 연출을 건다.
+
+          transform-box: fill-box + origin 좌하단 — 두 사각형이 같은
+          좌하단 원점을 공유하므로, 스케일도 같은 모서리에서 일어나야
+          "같은 자리에서 면적만 달라졌다"로 읽힌다.
+        */}
         <rect
+          data-fp-rect
           x={originX}
           y={originY - productD}
           width={productW}
           height={productD}
           className="fill-signal/85 stroke-signal"
           strokeWidth="0.6"
+          style={{ transformBox: "fill-box", transformOrigin: "left bottom" }}
         />
       </svg>
 
@@ -115,6 +127,9 @@ export function FootprintDiagram({
             <strong className="tabular font-semibold text-ink-100">
               {footprintM2}m²
             </strong>
+            <span className="tabular text-ink-400">
+              {formatPyeong(footprintM2)}
+            </span>
           </span>
           <span className="flex items-center gap-2 text-ink-400">
             <span
@@ -123,6 +138,7 @@ export function FootprintDiagram({
             />
             일반 기구 평균{" "}
             <span className="tabular">{TYPICAL_FOOTPRINT_M2}m²</span>
+            <span className="tabular">{formatPyeong(TYPICAL_FOOTPRINT_M2)}</span>
           </span>
           {savedPercent > 0 && (
             <span className="tabular font-display font-bold text-signal">

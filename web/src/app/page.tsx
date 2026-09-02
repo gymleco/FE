@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { FloatingCta } from "@/components/floating-cta";
+import { SiteHeader } from "@/components/site-header";
+import { HeroCopy } from "@/components/home/hero-copy";
+import { LineupDisc } from "@/components/home/lineup-disc";
 import { ProductShowcase } from "@/components/home/product-showcase";
 import { getProducts } from "@/lib/products-source";
 
@@ -17,55 +20,47 @@ export default async function Home() {
 
   return (
     <>
+      {/*
+        홈도 공통 헤더를 쓴다. 예전엔 자체 헤더에 제품·브랜드·문의 3개만
+        있어서, 홈에서 시작한 사람은 중고·부품·공식 헬스장으로 가는 길이
+        아예 보이지 않았다. 나머지 페이지에는 전체 메뉴가 있었으니
+        홈에서만 길이 막혀 있던 셈이다.
+      */}
+      <SiteHeader />
       <main id="main" className="flex-1">
-        {/* ── 0% 오프닝 ──────────────────────────────────────── */}
-        <section className="relative flex min-h-[100svh] flex-col justify-between overflow-hidden px-6 py-10 md:px-12 md:py-14">
-          <header className="flex items-baseline justify-between">
-            <span className="font-display text-lg font-black tracking-[0.18em] text-ink-100">
-              GYMLECO
-            </span>
-            <nav aria-label="주요" className="flex gap-6 text-sm">
-              <Link href="/products" className="text-ink-300 hover:text-ink-100">
-                제품
-              </Link>
-              <Link href="/about" className="text-ink-300 hover:text-ink-100">
-                브랜드
-              </Link>
-              <Link href="/contact" className="text-ink-300 hover:text-ink-100">
-                문의
-              </Link>
-            </nav>
-          </header>
+        {/*
+          ── 0% 오프닝 ──────────────────────────────────────────
 
-          <div className="max-w-4xl">
-            <p className="font-display text-[0.7rem] tracking-[0.4em] text-signal uppercase">
-              Born in Sweden
-            </p>
+          히어로를 sticky 로 고정하고 다음 섹션들이 그 위를 덮으며
+          올라오게 한다. 스크롤을 시작하는 순간 화면이 통째로 밀려나는
+          대신, 뒤 내용이 히어로 위로 미끄러져 올라온다.
 
-            <h1 className="mt-6 text-[clamp(2.25rem,7vw,5.5rem)] leading-[1.05] font-bold tracking-tight text-balance text-ink-100">
-              스웨덴에서 온,
-              <br />
-              공간을 아는 기구
-            </h1>
+          ★ overflow-hidden 을 여기에 두면 안 된다.
+            sticky 는 조상 중 하나라도 overflow 가 visible 이 아니면
+            그 안에 갇혀 동작하지 않는다. 원판이 넘칠 일이 없으므로 뺐다.
+        */}
+        <section className="sticky top-0 z-0 flex h-[100svh] flex-col justify-between px-6 py-10 md:px-12 md:py-14">
+          {/*
+            글이 먼저, 원판이 뒤. DOM 순서를 이렇게 두어야 JS 없이도
+            읽는 순서가 맞고, 스크린리더가 제목부터 만난다.
+            원판은 aria-hidden 이라 보조기술에는 잡히지 않는다.
+          */}
+          {/*
+            모바일은 제목 → 기구 → 설명 순서다.
+            좁은 화면에서 글을 먼저 다 읽고 한참 내려가야 기구가 나오면
+            "공간을 아는 기구" 라는 말과 실물이 따로 논다.
+            데스크톱에서는 왼쪽 글 / 오른쪽 기구로 돌아간다.
 
-            <p className="mt-8 max-w-xl text-pretty text-ink-300 md:text-lg">
-              본사 직영이라 중간 마진이 없습니다. 컴팩트 설계로 20~30평
-              피티샵에도 들어가고, 유지보수는 최소한으로 줄였습니다.
-            </p>
+            DOM 순서는 제목이 항상 먼저다 — 화면 배치만 grid-area 로 바꾼다.
+          */}
+          <div
+            className="grid gap-8 [grid-template-areas:'head''disc''body'] lg:grid-cols-[minmax(0,1fr)_minmax(0,42rem)] lg:items-center lg:gap-x-12 lg:gap-y-0 lg:[grid-template-areas:'head_disc''body_disc']"
+          >
+            {/* head 와 body 두 칸을 채운다. 그 사이에 원판이 들어간다. */}
+            <HeroCopy />
 
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link
-                href="/contact"
-                className="rounded-full bg-signal px-6 py-3 text-sm font-bold text-signal-ink transition-colors hover:bg-signal-hover"
-              >
-                무료 시연 신청
-              </Link>
-              <Link
-                href="/products"
-                className="rounded-full border border-ink-600 px-6 py-3 text-sm font-medium text-ink-100 transition-colors hover:border-ink-300"
-              >
-                제품 라인업 보기
-              </Link>
+            <div className="[grid-area:disc]">
+              <LineupDisc products={products} />
             </div>
           </div>
 
@@ -77,6 +72,13 @@ export default async function Home() {
           </p>
         </section>
 
+        {/*
+          히어로 위를 덮으며 올라오는 부분.
+
+          z-10 으로 히어로(z-0) 위에 올리고, 배경을 반드시 칠한다 —
+          투명하면 sticky 로 남아 있는 히어로가 글자 사이로 비쳐 보인다.
+        */}
+        <div className="relative z-10 bg-ink-950">
         {/* ── 10% 브랜드 스테이트먼트 ─────────────────────────── */}
         <section className="border-t border-hairline px-6 py-28 md:px-12 md:py-40">
           <div className="mx-auto max-w-4xl">
@@ -212,6 +214,7 @@ export default async function Home() {
             </div>
           </div>
         </section>
+        </div>
       </main>
 
       {/*

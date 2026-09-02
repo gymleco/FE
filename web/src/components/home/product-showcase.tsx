@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 import { CATEGORY_LABEL, type Product } from "@/lib/catalog";
+import { formatPyeong } from "@/lib/area";
 import { ProductMedia } from "@/components/product-media";
 
 /**
@@ -77,6 +78,16 @@ export function ProductShowcase({ products }: { products: Product[] }) {
             },
           });
 
+          /*
+           * 면적 사각형이 "앞 제품에서 자라거나 줄어든다".
+           *
+           * 두 패널의 다이어그램은 같은 축척으로 그려져 있으므로,
+           * 들어오는 사각형을 (앞 면적 / 이 면적) 배에서 1 로 되돌리면
+           * 앞 제품의 크기에서 출발해 제 크기로 변하는 것처럼 보인다.
+           * 사각형을 새로 그리지 않고 이미 있는 것을 스케일만 바꾼다.
+           */
+          const areaOf = (i: number) => products[i]?.footprintM2 ?? 0;
+
           panels.forEach((panel, i) => {
             if (i === 0) return;
             tl.to(
@@ -103,6 +114,46 @@ export function ProductShowcase({ products }: { products: Product[] }) {
               },
               i - 1 + 0.25,
             );
+
+            const cur = areaOf(i);
+            const prev = areaOf(i - 1);
+            if (!cur || !prev) return;
+
+            // 사각형은 면적비의 제곱근만큼 커지고 작아진다 (넓이 ∝ 변²)
+            const from = Math.sqrt(prev / cur);
+            const rect = panel.querySelector<SVGRectElement>("[data-fp-rect]");
+            if (rect) {
+              tl.fromTo(
+                rect,
+                { scaleX: from, scaleY: from },
+                {
+                  scaleX: 1,
+                  scaleY: 1,
+                  ease: "power2.out",
+                  duration: 0.55,
+                  immediateRender: false,
+                },
+                i - 1 + 0.25,
+              );
+            }
+
+            const num = panel.querySelector<HTMLElement>("[data-area]");
+            if (num) {
+              const counter = { v: prev };
+              tl.to(
+                counter,
+                {
+                  v: cur,
+                  ease: "power2.out",
+                  duration: 0.55,
+                  immediateRender: false,
+                  onUpdate: () => {
+                    num.textContent = counter.v.toFixed(1);
+                  },
+                },
+                i - 1 + 0.25,
+              );
+            }
           });
 
           /*
@@ -244,9 +295,19 @@ export function ProductShowcase({ products }: { products: Product[] }) {
                   <dt className="text-xs tracking-wider text-ink-400">
                     설치 면적
                   </dt>
+                  {/*
+                    평을 병기한다. 사장님이 임대차 계약서에서 보는 단위는
+                    m² 가 아니라 평이라, m² 만으로는 크기 감이 오지 않는다.
+                  */}
                   <dd className="tabular font-display mt-1 text-2xl font-bold text-signal">
-                    {product.footprintM2}
+                    {/* 숫자도 앞 제품 값에서 굴러온다. data-area 가 목표값이다. */}
+                    <span data-area={product.footprintM2}>
+                      {product.footprintM2}
+                    </span>
                     <span className="ml-0.5 text-base">m²</span>
+                    <span className="ml-2 text-sm font-medium text-ink-300">
+                      {formatPyeong(product.footprintM2!)}
+                    </span>
                   </dd>
                 </div>
                 <div>

@@ -37,6 +37,8 @@ export type ApiProduct = {
   heightMm: number | null;
   weightKg: number | null;
   thumbnailKey: string | null;
+  /** 누끼 사진 키. BE V6 에서 추가됐다. 아직 없는 응답도 있으므로 optional. */
+  cutoutKey?: string | null;
   imageKeys: string[];
 };
 

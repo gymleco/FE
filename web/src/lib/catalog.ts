@@ -39,6 +39,13 @@ export interface Product {
   imageUrl?: string;
   /** 400/800/1600 렌디션 srcset — imageUrl 이 있을 때만 함께 채워진다 */
   imageSrcSet?: string;
+  /**
+   * 배경 제거(누끼) 사진. 메인 회전 원판 전용이다.
+   * 썸네일과 나누는 이유는 용도가 다르기 때문 — 카드에는 상황이 있는 사진이,
+   * 원판에는 배경 없이 기구만 있는 사진이 필요하다.
+   */
+  cutoutUrl?: string;
+  cutoutSrcSet?: string;
   isPlaceholder?: boolean;
 }
 
