@@ -59,11 +59,26 @@ export async function POST(request: NextRequest) {
   }
 
   let paths: string[] = [];
+  let tags: string[] = [];
   try {
     const body = await request.json();
     if (Array.isArray(body?.paths)) {
       paths = body.paths.filter(
         (p: unknown): p is string => typeof p === "string" && p.startsWith("/"),
+      );
+    }
+    /*
+     * 태그를 본문에서도 받는다.
+     *
+     * 경로만으로는 부족한 것이 있다. 사이트 설정(상호·전화·SNS)은 푸터에
+     * 들어가므로 «모든» 페이지에 걸린다. 경로를 하나하나 적을 수 없고,
+     * 그렇다고 항상 전체를 갱신하면 제품 하나 고칠 때마다 사이트 전체가
+     * 다시 만들어진다. 무엇이 바뀌었는지는 서버가 가장 잘 아니까
+     * 서버가 태그로 말하게 한다.
+     */
+    if (Array.isArray(body?.tags)) {
+      tags = body.tags.filter(
+        (t: unknown): t is string => typeof t === "string" && t.length > 0,
       );
     }
   } catch {
@@ -86,6 +101,9 @@ export async function POST(request: NextRequest) {
    * 문서도 이 경우에 expire: 0 을 쓰라고 명시한다.
    */
   revalidateTag("products", { expire: 0 });
+  for (const tag of tags) {
+    revalidateTag(tag, { expire: 0 });
+  }
   for (const path of paths) {
     const slug = path.match(/^\/products\/([^/]+)$/)?.[1];
     if (slug) revalidateTag(`product:${slug}`, { expire: 0 });
@@ -95,6 +113,10 @@ export async function POST(request: NextRequest) {
     revalidatePath(path);
   }
 
-  console.log(`[revalidate] ${paths.length}개 경로 갱신: ${paths.join(", ")}`);
-  return NextResponse.json({ revalidated: paths.length });
+  console.log(
+    `[revalidate] 경로 ${paths.length}개 · 태그 ${tags.length}개 갱신` +
+      (paths.length ? ` — ${paths.join(", ")}` : "") +
+      (tags.length ? ` [${tags.join(", ")}]` : ""),
+  );
+  return NextResponse.json({ revalidated: paths.length, tags: tags.length });
 }

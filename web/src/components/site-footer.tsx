@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { getSiteInfo, safeHref } from "@/lib/settings-source";
+
 /**
  * 푸터
  *
@@ -16,17 +18,31 @@ function filled(pairs: [string, string | undefined][]): string[] {
     .map(([label, v]) => (label ? `${label} ${v!.trim()}` : v!.trim()));
 }
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  // 관리 화면에서 고친 값을 읽는다. API 가 없으면 환경변수로 물러선다.
+  const info = await getSiteInfo();
+
   const businessLine = filled([
-    ["", process.env.NEXT_PUBLIC_BIZ_NAME ?? "짐레코 코리아"],
-    ["대표자", process.env.NEXT_PUBLIC_BIZ_OWNER],
-    ["사업자등록번호", process.env.NEXT_PUBLIC_BIZ_NO],
+    ["", info.companyName || "짐레코 코리아"],
+    ["대표자", info.ceo],
+    ["사업자등록번호", info.registrationNo],
   ]);
   const contactLine = filled([
-    ["주소", process.env.NEXT_PUBLIC_BIZ_ADDRESS],
-    ["전화", process.env.NEXT_PUBLIC_BIZ_TEL],
-    ["이메일", process.env.NEXT_PUBLIC_BIZ_EMAIL],
+    ["주소", info.address],
+    ["전화", info.phone],
+    ["이메일", info.email],
+    ["영업시간", info.businessHours],
   ]);
+
+  // 등록된 것만 내보낸다. 빈 링크가 늘어선 줄은 없느니만 못하다.
+  const sns: { label: string; href: string }[] = [
+    ["Instagram", info.instagram],
+    ["YouTube", info.youtube],
+    ["Blog", info.blog],
+  ].flatMap(([label, url]) => {
+    const href = safeHref(url);
+    return href ? [{ label, href }] : [];
+  });
 
   return (
     <footer className="border-t border-hairline px-6 py-16 md:px-12">
@@ -137,10 +153,27 @@ export function SiteFooter() {
           전자상거래법상 표시 의무는 실제 판매를 시작할 때 생기므로
           지금 비워 두는 것이 법적으로도 문제되지 않는다.
 
-        ★ 환경변수로 뺀 이유
-          사업자 정보는 코드가 아니라 운영 정보다. 나중에 site_setting
-          테이블이 생기면 그쪽에서 읽어 오도록 이 함수만 바꾸면 된다.
+        ★ 이제 관리 화면에서 읽는다
+          site_setting 테이블이 원본이고, 대표님이 관리 화면에서 고치면
+          재검증 훅이 "settings" 태그를 끊어 즉시 반영된다.
+          환경변수는 API 가 없을 때를 위한 폴백으로만 남아 있다.
       */}
+      {sns.length > 0 && (
+        <nav aria-label="소셜" className="mt-12 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          {sns.map((s) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink-300 transition-colors hover:text-ink-100"
+            >
+              {s.label}
+            </a>
+          ))}
+        </nav>
+      )}
+
       <div className="mt-14 border-t border-hairline pt-8 text-xs leading-relaxed text-ink-400">
         {businessLine.length > 0 && <p>{businessLine.join(" · ")}</p>}
         {contactLine.length > 0 && (

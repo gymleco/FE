@@ -94,3 +94,16 @@ export async function fetchProduct(slug: string): Promise<ApiProduct | null> {
     tags: ["products", `product:${slug}`],
   });
 }
+
+/**
+ * 사이트 설정 — 상호 · 연락처 · SNS 처럼 대표님이 관리 화면에서 고치는 값.
+ *
+ * "settings" 태그를 단다. 이 값들은 푸터에 들어가 모든 페이지에 걸리므로
+ * 경로로는 무효화할 수 없다. 관리 화면에서 저장하면 서버가 이 태그를
+ * 끊어 달라고 재검증 훅에 알려준다.
+ */
+export async function fetchSettings(): Promise<Record<string, string> | null> {
+  return get<Record<string, string>>("/api/public/settings", {
+    tags: ["settings"],
+  });
+}
