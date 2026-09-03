@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/*
+ * 관리 화면은 하루 종일 들여다보는 도구다. 공개 사이트의 암전 연출을
+ * 그대로 가져오면 표와 폼을 읽기 힘들다. 밝은 바탕으로 가되 브랜드
+ * 노랑은 "지금 누를 것" 한 자리에만 쓴다 — 화면 전체가 노래지면
+ * 어느 것이 주 행동인지 알 수 없다.
+ */
+@theme {
+  --color-ground:    #f4f4f2;
+  --color-surface:   #ffffff;
+  --color-surface-2: #eceae5;
+
+  --color-ink:       #17181b;
+  --color-ink-2:     #4c4840;   /* 노랑 쪽으로 살짝 기운 웜 그레이 */
+  --color-ink-3:     #7b756b;
+
+  --color-line:      #dedbd4;
+  --color-line-soft: #ecebe6;
+
+  --color-signal:     #ffd400;  /* 칠하는 노랑 — 주 버튼 */
+  --color-signal-ink: #0a0b0c;
+  --color-accent:     #8a5a00;  /* 글자로 쓰는 노랑 (흰 바탕 5.5:1) */
+
+  --color-ok:     #2c6e49;
+  --color-ok-bg:  #e4f0e9;
+  --color-warn:   #a8622d;
+  --color-warn-bg:#f6ebe2;
+  --color-risk:   #a8322d;
+  --color-risk-bg:#f7e6e5;
+  --color-mute:   #7b756b;
+  --color-mute-bg:#eceae5;
+
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo",
+    "Malgun Gothic", "맑은 고딕", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+html, body, #root { height: 100%; }
+
+body {
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 숫자가 열을 이루는 곳은 자릿수가 흔들리면 안 된다 */
+.tabular { font-variant-numeric: tabular-nums; }
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
