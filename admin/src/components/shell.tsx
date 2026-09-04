@@ -15,6 +15,7 @@ const NAV = [
   { to: "/", label: "대시보드", end: true },
   { to: "/products", label: "제품" },
   { to: "/used", label: "중고" },
+  { to: "/settings", label: "사이트 설정" },
 ] as const;
 
 export function Shell() {

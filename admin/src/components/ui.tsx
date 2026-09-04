@@ -94,12 +94,18 @@ export function Field({
   required = false,
   help,
   error,
+  /**
+   * 필수 칸이 하나도 없는 화면에서는 «선택» 이 정보를 담지 않는다.
+   * 열여덟 칸에 똑같은 꼬리표가 붙으면 읽는 눈만 늘어난다.
+   */
+  showOptional = true,
   children,
 }: {
   label: string;
   required?: boolean;
   help?: string;
   error?: string;
+  showOptional?: boolean;
   children: (props: { id: string; describedBy?: string; invalid: boolean }) => ReactNode;
 }) {
   const id = useId();
@@ -116,12 +122,13 @@ export function Field({
           <span className="rounded-xs bg-accent/12 px-1 py-px text-[0.65rem] font-bold text-accent">
             필수
           </span>
-        ) : (
+        ) : showOptional ? (
           <span className="text-xs font-normal text-ink-3">선택</span>
-        )}
+        ) : null}
       </label>
       {children({ id, describedBy, invalid: Boolean(error) })}
-      {help && (
+      {/* 오류가 붙으면 도움말은 감춘다. 같은 말이 두 줄로 겹쳐 보이는 일이 잦다. */}
+      {help && !error && (
         <p id={helpId} className="text-xs text-ink-3">
           {help}
         </p>

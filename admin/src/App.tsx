@@ -7,6 +7,7 @@ import { Dashboard } from "@/pages/dashboard";
 import { Login } from "@/pages/login";
 import { ProductForm } from "@/pages/product-form";
 import { ProductList } from "@/pages/product-list";
+import { Settings } from "@/pages/settings";
 import { UsedForm } from "@/pages/used-form";
 import { UsedList } from "@/pages/used-list";
 
@@ -45,6 +46,7 @@ function Gate() {
         <Route path="products" element={<ProductList />} />
         <Route path="products/new" element={<ProductForm />} />
         <Route path="products/:id" element={<ProductForm />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="used" element={<UsedList />} />
         <Route path="used/new" element={<UsedForm />} />
         <Route path="used/:id" element={<UsedForm />} />
