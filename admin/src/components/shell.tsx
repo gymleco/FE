@@ -11,12 +11,46 @@ import { Button } from "@/components/ui";
  * 메뉴에 있으면 동작해야 한다.
  */
 
-const NAV = [
-  { to: "/", label: "대시보드", end: true },
-  { to: "/products", label: "제품" },
-  { to: "/used", label: "중고" },
-  { to: "/settings", label: "사이트 설정" },
-] as const;
+/**
+ * 항목이 아홉 개가 되면서 한 줄로 늘어놓을 수 없게 됐다.
+ * «파는 것 / 화면에 까는 것 / 고객센터» 로 묶는다 — 무엇을 고치려고
+ * 들어왔는지에 따라 갈 곳이 바로 정해져야 한다.
+ *
+ * 묶음 이름은 좁은 화면에서 감춘다. 거기서는 메뉴가 가로로 흐르는데
+ * 그 사이에 제목이 끼면 읽는 흐름만 끊는다.
+ */
+const NAV: { heading?: string; items: { to: string; label: string; end?: boolean }[] }[] = [
+  {
+    items: [
+      { to: "/", label: "대시보드", end: true },
+      { to: "/inquiries", label: "문의" },
+    ],
+  },
+  {
+    heading: "파는 것",
+    items: [
+      { to: "/products", label: "제품" },
+      { to: "/used", label: "중고" },
+    ],
+  },
+  {
+    heading: "화면",
+    items: [
+      { to: "/banners", label: "배너" },
+      { to: "/sections", label: "구역 사진" },
+    ],
+  },
+  {
+    heading: "고객센터",
+    items: [
+      { to: "/faq", label: "자주 묻는 질문" },
+      { to: "/notices", label: "공지사항" },
+    ],
+  },
+  {
+    items: [{ to: "/settings", label: "사이트 설정" }],
+  },
+];
 
 export function Shell() {
   const { state, logout } = useAuth();
@@ -37,22 +71,37 @@ export function Shell() {
           </div>
         </div>
 
-        <nav aria-label="주요" className="flex gap-1 overflow-x-auto md:flex-col md:overflow-visible">
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={"end" in item ? item.end : false}
-              className={({ isActive }) =>
-                `rounded-xs px-3 py-2 text-sm font-semibold whitespace-nowrap transition-colors ${
-                  isActive
-                    ? "bg-surface-2 text-ink"
-                    : "text-ink-2 hover:bg-surface-2 hover:text-ink"
-                }`
-              }
+        <nav
+          aria-label="주요"
+          className="flex gap-1 overflow-x-auto md:flex-col md:gap-3 md:overflow-visible"
+        >
+          {NAV.map((group, index) => (
+            <div
+              key={group.heading ?? `group-${index}`}
+              className="flex gap-1 md:flex-col md:gap-0.5"
             >
-              {item.label}
-            </NavLink>
+              {group.heading && (
+                <p className="hidden px-3 pb-1 text-[0.65rem] font-bold tracking-[0.12em] text-ink-3 md:block">
+                  {group.heading}
+                </p>
+              )}
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end ?? false}
+                  className={({ isActive }) =>
+                    `rounded-xs px-3 py-2 text-sm font-semibold whitespace-nowrap transition-colors ${
+                      isActive
+                        ? "bg-surface-2 text-ink"
+                        : "text-ink-2 hover:bg-surface-2 hover:text-ink"
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
 

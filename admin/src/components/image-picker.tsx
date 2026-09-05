@@ -12,7 +12,7 @@ import { Button, Pill } from "@/components/ui";
  *
  * ★ 서버가 크기별로 다시 만들어 준다.
  *   올린 파일을 그대로 쓰지 않는다. 서버가 시그니처를 확인하고 다시
- *   인코딩해 400 · 800 · 1200 세 벌을 만든다. 그래서 화면이 들고 있는
+ *   인코딩해 400 · 800 · 1600 세 벌을 만든다. 그래서 화면이 들고 있는
  *   값은 파일이 아니라 «키» 하나뿐이다.
  *
  * ★ 실패를 조용히 넘기지 않는다.
@@ -37,6 +37,8 @@ export function ImagePicker({
   onChange,
   help,
   transparent = false,
+  required = false,
+  error,
 }: {
   label: string;
   value: string | null;
@@ -44,14 +46,18 @@ export function ImagePicker({
   help?: string;
   /** 누끼처럼 배경이 비치는 사진이면 미리보기 바탕을 체크무늬로 */
   transparent?: boolean;
+  /** 서버가 NOT NULL 로 막는 자리. 없이 저장하면 거절당한다 */
+  required?: boolean;
+  /** 저장을 눌렀는데 이 사진 때문에 막혔을 때 */
+  error?: string;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   async function pick(file: File | undefined) {
     if (!file) return;
-    setError(null);
+    setUploadError(null);
     setBusy(true);
     try {
       const form = new FormData();
@@ -59,7 +65,7 @@ export function ImagePicker({
       const result = await api.upload<UploadResult>("/admin/uploads/image", form);
       onChange(result.key);
     } catch (e) {
-      setError(
+      setUploadError(
         e instanceof ApiError ? e.message : "사진을 올리지 못했습니다. 다시 시도해 주세요.",
       );
     } finally {
@@ -74,7 +80,13 @@ export function ImagePicker({
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2 text-sm font-semibold">
         {label}
-        <span className="text-xs font-normal text-ink-3">선택</span>
+        {required ? (
+          <span className="rounded-xs bg-accent/12 px-1 py-px text-[0.65rem] font-bold text-accent">
+            필수
+          </span>
+        ) : (
+          <span className="text-xs font-normal text-ink-3">선택</span>
+        )}
       </div>
 
       <div className="flex items-start gap-3">
@@ -118,7 +130,13 @@ export function ImagePicker({
               <span className="truncate font-mono text-xs text-ink-3">{value}</span>
             </div>
           )}
-          {error && <p className="text-xs font-semibold text-risk">{error}</p>}
+          {/* 올리다 실패한 것과 «비어 있어서 막힌 것» 을 둘 다 같은 자리에 적는다 */}
+          {(uploadError ?? error) && (
+            <p className="flex items-start gap-1 text-xs font-semibold text-risk">
+              <span aria-hidden="true">!</span>
+              {uploadError ?? error}
+            </p>
+          )}
         </div>
       </div>
 

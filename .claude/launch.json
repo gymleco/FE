@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "FE/web", "run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "admin",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "FE/admin", "run", "dev"],
+      "port": 5173
     }
   ]
 }

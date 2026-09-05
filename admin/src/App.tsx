@@ -3,10 +3,19 @@ import { Navigate, Route, Routes } from "react-router";
 import { AuthProvider, useAuth } from "@/auth/auth";
 import { Shell } from "@/components/shell";
 import { Spinner, ToastProvider } from "@/components/ui";
+import { BannerForm } from "@/pages/banner-form";
+import { BannerList } from "@/pages/banner-list";
 import { Dashboard } from "@/pages/dashboard";
+import { FaqForm } from "@/pages/faq-form";
+import { FaqList } from "@/pages/faq-list";
+import { InquiryDetail } from "@/pages/inquiry-detail";
+import { InquiryList } from "@/pages/inquiry-list";
 import { Login } from "@/pages/login";
+import { NoticeForm } from "@/pages/notice-form";
+import { NoticeList } from "@/pages/notice-list";
 import { ProductForm } from "@/pages/product-form";
 import { ProductList } from "@/pages/product-list";
+import { SectionMediaPage } from "@/pages/section-media";
 import { Settings } from "@/pages/settings";
 import { UsedForm } from "@/pages/used-form";
 import { UsedList } from "@/pages/used-list";
@@ -43,13 +52,31 @@ function Gate() {
       <Route path="/login" element={<Navigate to="/" replace />} />
       <Route element={<Shell />}>
         <Route index element={<Dashboard />} />
+
+        <Route path="inquiries" element={<InquiryList />} />
+        <Route path="inquiries/:id" element={<InquiryDetail />} />
+
         <Route path="products" element={<ProductList />} />
         <Route path="products/new" element={<ProductForm />} />
         <Route path="products/:id" element={<ProductForm />} />
-        <Route path="settings" element={<Settings />} />
+
         <Route path="used" element={<UsedList />} />
         <Route path="used/new" element={<UsedForm />} />
         <Route path="used/:id" element={<UsedForm />} />
+
+        <Route path="banners" element={<BannerList />} />
+        <Route path="banners/new" element={<BannerForm />} />
+        <Route path="banners/:id" element={<BannerForm />} />
+        <Route path="sections" element={<SectionMediaPage />} />
+
+        <Route path="faq" element={<FaqList />} />
+        <Route path="faq/new" element={<FaqForm />} />
+        <Route path="faq/:id" element={<FaqForm />} />
+        <Route path="notices" element={<NoticeList />} />
+        <Route path="notices/new" element={<NoticeForm />} />
+        <Route path="notices/:id" element={<NoticeForm />} />
+
+        <Route path="settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

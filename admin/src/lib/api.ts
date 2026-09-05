@@ -55,6 +55,27 @@ async function refreshOnce(): Promise<boolean> {
   return refreshing;
 }
 
+/**
+ * CSRF 토큰을 쿠키에서 꺼낸다.
+ *
+ * 서버는 `/api/admin/**` 에 CSRF 를 걸어 두고 토큰을 `XSRF-TOKEN` 쿠키로
+ * 내려준다 (SecurityConfig, CookieCsrfTokenRepository.withHttpOnlyFalse).
+ * 이 쿠키 하나만 HttpOnly 가 아니다 — 브라우저가 읽어 헤더로 되돌려
+ * 보내는 것이 이 방식의 전부이기 때문이다.
+ *
+ * ★ 인증 토큰과 혼동하지 않는다.
+ *   접근·갱신 토큰은 HttpOnly 라 여기서 읽을 수 없고, 읽을 필요도 없다.
+ *   자바스크립트가 읽을 수 있는 것은 «위조 방지용 난수» 뿐이다.
+ */
+function readCsrfToken(): string | null {
+  for (const part of document.cookie.split("; ")) {
+    if (part.startsWith("XSRF-TOKEN=")) {
+      return decodeURIComponent(part.slice("XSRF-TOKEN=".length));
+    }
+  }
+  return null;
+}
+
 type Options = {
   method?: string;
   body?: unknown;
@@ -62,20 +83,29 @@ type Options = {
   form?: FormData;
   /** 401 재시도 루프를 막기 위한 내부 표시 */
   retried?: boolean;
+  /** CSRF 재시도를 한 번으로 묶기 위한 내부 표시 */
+  csrfRetried?: boolean;
 };
 
 async function request<T>(path: string, opts: Options = {}): Promise<T> {
-  const init: RequestInit = {
-    method: opts.method ?? "GET",
-    credentials: "same-origin",
-  };
+  const method = opts.method ?? "GET";
+  // 서버가 CSRF 를 요구하는 것과 같은 기준이다 (읽기는 제외)
+  const mutating = method !== "GET" && method !== "HEAD" && method !== "OPTIONS";
+
+  const init: RequestInit = { method, credentials: "same-origin" };
+  const headers: Record<string, string> = {};
 
   if (opts.form) {
-    init.body = opts.form; // Content-Type 은 브라우저가 boundary 와 함께 붙인다
+    // Content-Type 은 브라우저가 boundary 와 함께 붙인다 — 직접 넣지 않는다
+    init.body = opts.form;
   } else if (opts.body !== undefined) {
-    init.headers = { "Content-Type": "application/json" };
+    headers["Content-Type"] = "application/json";
     init.body = JSON.stringify(opts.body);
   }
+
+  const sentCsrf = mutating ? readCsrfToken() : null;
+  if (sentCsrf) headers["X-XSRF-TOKEN"] = sentCsrf;
+  if (Object.keys(headers).length > 0) init.headers = headers;
 
   const res = await fetch(BASE + path, init);
 
@@ -95,6 +125,23 @@ async function request<T>(path: string, opts: Options = {}): Promise<T> {
     }
     onSessionLost?.();
     throw new ApiError(401, "SESSION_EXPIRED", "로그인이 필요합니다.");
+  }
+
+  /*
+   * 첫 쓰기 요청이 403 으로 돌아올 수 있다.
+   *
+   * 서버는 CSRF 토큰을 «누가 실제로 꺼내 볼 때» 만 만들어 쿠키로 내려준다.
+   * 읽기만 하다가 처음 저장을 누르면 아직 쿠키가 없어 한 번 거절당하는데,
+   * 그 거절 응답에 쿠키가 실려 온다. 토큰이 새로 생겼을 때만 한 번 더 보낸다.
+   *
+   * ★ 조건 없이 재시도하지 않는다. 진짜 «권한 없음» 도 403 이라,
+   *   무조건 다시 보내면 막혀 있다는 사실이 화면에 영영 안 나온다.
+   */
+  if (res.status === 403 && mutating && !opts.csrfRetried) {
+    const fresh = readCsrfToken();
+    if (fresh && fresh !== sentCsrf) {
+      return request<T>(path, { ...opts, csrfRetried: true });
+    }
   }
 
   if (res.status === 204) return undefined as T;
@@ -140,7 +187,94 @@ export const api = {
   upload: <T,>(p: string, form: FormData) => request<T>(p, { method: "POST", form }),
 };
 
+/* ── 파일 내려받기 ───────────────────────────────────────── */
+
+export type DownloadResult = {
+  filename: string;
+  /** 서버가 몇 줄을 담았는지. 헤더가 없으면 null */
+  count: number | null;
+  /** 상한(5000건)에 걸려 잘렸는가 */
+  truncated: boolean;
+};
+
+/**
+ * 내려받기는 request() 를 쓸 수 없다.
+ * 저쪽은 응답을 텍스트로 읽어 JSON 으로 푸는데, 여기서 받는 것은 파일이다.
+ *
+ * ★ 몇 건이 담겼는지 반드시 돌려준다.
+ *   0건짜리 빈 파일도 «내려받아졌다» 로 보인다. 조건을 잘못 잡아
+ *   아무것도 안 들어간 파일을 받아 놓고 «문의가 없었구나» 라고
+ *   오해하는 것이 이 화면에서 가장 흔한 실수다.
+ */
+export async function download(path: string, retried = false): Promise<DownloadResult> {
+  const res = await fetch(BASE + path, { credentials: "same-origin" });
+
+  if (res.status === 401 && !retried) {
+    if (await refreshOnce()) return download(path, true);
+    onSessionLost?.();
+    throw new ApiError(401, "SESSION_EXPIRED", "로그인이 필요합니다.");
+  }
+
+  if (!res.ok) {
+    const text = await res.text();
+    const body = text ? safeJson(text) : null;
+    throw new ApiError(
+      res.status,
+      (body?.code as string) ?? "UNKNOWN",
+      (body?.message as string) ?? fallbackMessage(res.status),
+      (body?.fields as Record<string, string>) ?? {},
+    );
+  }
+
+  const filename = filenameFrom(res.headers.get("Content-Disposition")) ?? "download.csv";
+  const url = URL.createObjectURL(await res.blob());
+  try {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } finally {
+    // 곧바로 지우면 브라우저가 아직 읽는 중일 수 있다
+    setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  }
+
+  const count = Number(res.headers.get("X-Export-Count"));
+  return {
+    filename,
+    count: Number.isFinite(count) ? count : null,
+    truncated: res.headers.get("X-Export-Truncated") === "true",
+  };
+}
+
+/** Content-Disposition 에서 파일 이름을 꺼낸다. 한글 이름은 filename* 쪽에 있다. */
+function filenameFrom(header: string | null): string | null {
+  if (!header) return null;
+  const encoded = /filename\*=UTF-8''([^;]+)/i.exec(header);
+  if (encoded?.[1]) {
+    try {
+      return decodeURIComponent(encoded[1]);
+    } catch {
+      // 잘못 인코딩된 값이면 아래의 평범한 filename 으로 물러선다
+    }
+  }
+  return /filename="?([^";]+)"?/i.exec(header)?.[1] ?? null;
+}
+
 /* ── 서버 응답 모양 ──────────────────────────────────────── */
+
+/** Spring 의 Page 응답. 화면이 쓰는 것만 적는다. */
+export type Paged<T> = {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  /** 0부터 센다 */
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
+};
 
 export type Product = {
   id: number;
@@ -185,3 +319,93 @@ export type UsedItem = {
 
 export type UploadResult = { key: string; urls: Record<string, string> };
 export type Me = { username: string; role: string };
+
+/* ── 문의 ────────────────────────────────────────────────
+   목록에는 이름이 가려진 채로 온다. 상세를 열어야 전체가 보이고,
+   그 열람은 서버에 기록으로 남는다.
+   ──────────────────────────────────────────────────────── */
+
+export type InquiryListItem = {
+  id: number;
+  /** 서버가 이미 한국어로 준다 ("견적" · "무료 시연" …) */
+  type: string;
+  maskedName: string;
+  company: string | null;
+  region: string | null;
+  /** NEW · CONTACTING · DONE · SPAM */
+  status: string;
+  createdAt: string;
+};
+
+export type InquiryDetail = {
+  id: number;
+  type: string;
+  name: string;
+  /** 복호화된 전화번호. 화면 밖으로 내보내지 않는다 */
+  phone: string | null;
+  email: string | null;
+  company: string | null;
+  region: string | null;
+  spaceInfo: string | null;
+  message: string;
+  productIds: number[];
+  status: string;
+  memo: string;
+  consentAt: string;
+  marketingConsentAt: string | null;
+  purgeAt: string | null;
+  createdAt: string;
+};
+
+/* ── 배너 · 섹션 이미지 ──────────────────────────────────── */
+
+export type Banner = {
+  id: number;
+  /** MAIN · PRODUCT · USED · PART · ACCESSORY · CENTER */
+  position: string;
+  positionLabel: string;
+  imagePcKey: string;
+  imageMobileKey: string;
+  title: string;
+  subtitle: string;
+  linkUrl: string;
+  startsAt: string | null;
+  endsAt: string | null;
+  sortOrder: number;
+  visible: boolean;
+  updatedAt: string;
+};
+
+/** 드롭다운 값은 서버가 준다 — 화면에 적어 두면 값이 어긋나도 알 수 없다 */
+export type BannerPositionOption = { value: string; label: string };
+
+export type SectionMedia = {
+  sectionKey: string;
+  imagePcKey: string;
+  imageMobileKey: string;
+  altText: string;
+  updatedAt: string;
+};
+
+/* ── 고객센터 ────────────────────────────────────────────── */
+
+export type Faq = {
+  id: number;
+  category: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  visible: boolean;
+  updatedAt: string;
+};
+
+export type Notice = {
+  id: number;
+  title: string;
+  /** 목록에서는 오지 않는다 — 상세를 불러야 채워진다 */
+  body: string | null;
+  pinned: boolean;
+  publishedAt: string | null;
+  visible: boolean;
+  updatedAt: string;
+};
