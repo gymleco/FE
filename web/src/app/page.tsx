@@ -127,7 +127,13 @@ export default async function Home() {
               필요 이상으로 자리를 차지하지 않습니다.
             </h2>
             <p className="mt-10 max-w-2xl text-pretty text-ink-300 md:text-lg">
-              짐레코는 1985년부터 스웨덴에서 상업용 헬스기구를 만들어
+              {/*
+                연도는 본사(gymleco.com)가 「Strength training equipment from
+                Sweden — Since 1994」 라고 쓰는 값에 맞춘다. 예전에 1985 로
+                적혀 있었는데 근거가 없는 숫자였다. 회사 연혁은 지어내면
+                안 되는 종류의 사실이다.
+              */}
+              짐레코는 1994년부터 스웨덴에서 상업용 헬스기구를 만들어
               왔습니다. 화려한 디스플레이 대신 프레임의 두께와 용접,
               베어링의 수명에 비용을 씁니다. 10년 뒤에도 처음과 같은
               운동감을 내는 것이 목표입니다.
