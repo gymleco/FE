@@ -5,6 +5,7 @@ import { centersByRegion, officialCenters } from "@/lib/centers";
 import { findProduct } from "@/lib/catalog";
 import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
+import { getBanner } from "@/lib/banner-source";
 import { SampleBadge } from "@/components/sample-badge";
 import { SiteHeader } from "@/components/site-header";
 
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
     "짐레코 기구를 도입한 오피셜 센터. 직접 운동해 보고 결정하실 수 있습니다. 가까운 센터에서 기구를 체험하세요.",
 };
 
-export default function CentersPage() {
+export default async function CentersPage() {
+  const banner = await getBanner("CENTER");
   const regions = Object.keys(centersByRegion);
 
   return (
@@ -22,6 +24,7 @@ export default function CentersPage() {
       <SiteHeader />
       <main id="main" className="flex-1">
         <PageHeader
+        banner={banner}
           eyebrow="Official Centers"
           title="짐레코 공식 헬스장"
           description="짐레코 기구를 도입한 센터입니다. 카탈로그 사진보다 직접 잡아보고 움직여 보는 편이 빠릅니다. 방문 전 센터에 이용 가능 여부를 확인해 주세요."

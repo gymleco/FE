@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getProducts } from "@/lib/products-source";
 import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
+import { getBanner } from "@/lib/banner-source";
 import { ProductCard } from "@/components/product-card";
 import { SiteHeader } from "@/components/site-header";
 
@@ -15,12 +16,14 @@ export const metadata: Metadata = {
 
 export default async function PartsPage() {
   const parts = await getProducts("PART");
+  const banner = await getBanner("PART");
 
   return (
     <>
       <SiteHeader />
       <main id="main" className="flex-1">
         <PageHeader
+        banner={banner}
           eyebrow="Parts"
           title="부품"
           description="본사 직영이라 부품 조달 경로가 짧습니다. 모델명과 증상만 알려주시면 필요한 부품을 확인해 드립니다."

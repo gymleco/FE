@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getProducts } from "@/lib/products-source";
 import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
+import { getBanner } from "@/lib/banner-source";
 import { ProductCard } from "@/components/product-card";
 import { SiteHeader } from "@/components/site-header";
 
@@ -15,12 +16,14 @@ export const metadata: Metadata = {
 
 export default async function AccessoriesPage() {
   const accessories = await getProducts("ACCESSORY");
+  const banner = await getBanner("ACCESSORY");
 
   return (
     <>
       <SiteHeader />
       <main id="main" className="flex-1">
         <PageHeader
+        banner={banner}
           eyebrow="Accessories"
           title="악세사리"
           description="기구만으로는 운영이 되지 않습니다. 바닥재, 핸들, 보호 장비까지 함께 준비하시면 오픈 후 추가 주문이 줄어듭니다."

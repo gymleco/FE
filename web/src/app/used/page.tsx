@@ -11,6 +11,7 @@ import {
 } from "@/lib/used";
 import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
+import { getBanner } from "@/lib/banner-source";
 import { SampleBadge } from "@/components/sample-badge";
 import { SiteHeader } from "@/components/site-header";
 
@@ -20,12 +21,14 @@ export const metadata: Metadata = {
     "짐레코 중고 헬스기구. 센터 리뉴얼·폐업으로 회수한 기구를 점검 후 판매합니다. 상태 등급과 연식을 명시하며, 재고는 수시로 바뀝니다.",
 };
 
-export default function UsedPage() {
+export default async function UsedPage() {
+  const banner = await getBanner("USED");
   return (
     <>
       <SiteHeader />
       <main id="main" className="flex-1">
         <PageHeader
+        banner={banner}
           eyebrow="Used"
           title="중고 기구"
           description="센터 리뉴얼이나 폐업으로 회수한 기구를 점검·정비 후 판매합니다. 예산이 빠듯한 초기 창업에 현실적인 선택지입니다."

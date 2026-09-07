@@ -107,3 +107,32 @@ export async function fetchSettings(): Promise<Record<string, string> | null> {
     tags: ["settings"],
   });
 }
+
+/** 구역 배경 이미지. 키마다 { pc, mobile, alt } 를 준다. */
+export async function fetchSectionMedia(): Promise<Record<
+  string,
+  { pc: string; mobile: string; alt: string }
+> | null> {
+  return get<Record<string, { pc: string; mobile: string; alt: string }>>(
+    "/api/public/section-media",
+    { tags: ["section-media"] },
+  );
+}
+
+export type ApiBanner = {
+  id: number;
+  imagePcKey: string | null;
+  imageMobileKey: string | null;
+  title: string | null;
+  subtitle: string | null;
+  linkUrl: string | null;
+};
+
+/** 그 위치에 «지금» 보여도 되는 배너. 서버가 기간과 노출을 이미 걸러서 준다. */
+export async function fetchBanners(position: string): Promise<ApiBanner[] | null> {
+  const data = await get<{ items: ApiBanner[] }>(
+    `/api/public/banners?position=${encodeURIComponent(position)}`,
+    { tags: ["banners"] },
+  );
+  return data?.items ?? null;
+}

@@ -5,6 +5,7 @@ import { getProducts } from "@/lib/products-source";
 import { CatalogGrid } from "@/components/catalog-grid";
 import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
+import { getBanner } from "@/lib/banner-source";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
@@ -23,12 +24,14 @@ const CATEGORIES: ProductCategory[] = [
 
 export default async function ProductsPage() {
   const products = await getProducts("EQUIPMENT");
+  const banner = await getBanner("PRODUCT");
 
   return (
     <>
       <SiteHeader />
       <main id="main" className="flex-1">
         <PageHeader
+        banner={banner}
           eyebrow="Products"
           title="제품 라인업"
           description="20~30평 공간에도 라인업을 온전히 갖출 수 있도록 설계돼 있습니다. 각 제품의 설치 면적을 일반 기구 평균과 비교해 표시했습니다."
