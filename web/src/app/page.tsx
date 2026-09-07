@@ -3,6 +3,7 @@ import { FloatingCta } from "@/components/floating-cta";
 import { SiteHeader } from "@/components/site-header";
 import { HeroCopy } from "@/components/home/hero-copy";
 import { LineupDisc } from "@/components/home/lineup-disc";
+import { getSectionMedia } from "@/lib/section-media";
 import { ProductShowcase } from "@/components/home/product-showcase";
 import { getProducts } from "@/lib/products-source";
 
@@ -16,7 +17,10 @@ import { getProducts } from "@/lib/products-source";
  * 드러내는 방식이지, 없던 것을 만들어내는 방식이 아니다 (§3.4-5).
  */
 export default async function Home() {
-  const products = await getProducts("EQUIPMENT");
+  const [products, whyMedia] = await Promise.all([
+    getProducts("EQUIPMENT"),
+    getSectionMedia("home.why"),
+  ]);
 
   return (
     <>
@@ -39,6 +43,16 @@ export default async function Home() {
             sticky 는 조상 중 하나라도 overflow 가 visible 이 아니면
             그 안에 갇혀 동작하지 않는다. 원판이 넘칠 일이 없으므로 뺐다.
         */}
+        {/*
+          맨 위에 있는지 알려 주는 표식.
+
+          히어로 자체에 표시를 달 수 없다 — sticky 라 스크롤해도 뒤에 남아
+          화면을 영영 벗어나지 않기 때문이다. 대신 «고정되지 않는» 이 한 줄을
+          두면, 이게 보이는 동안이 곧 «첫 화면» 이다.
+          첫 화면에는 이미 큰 버튼 두 개가 있으니 떠 있는 버튼은 비킨다.
+        */}
+        <div data-cta-anchor aria-hidden="true" className="h-px" />
+
         <section className="sticky top-0 z-0 flex h-[100svh] flex-col justify-between px-6 py-10 md:px-12 md:py-14">
           {/*
             글이 먼저, 원판이 뒤. DOM 순서를 이렇게 두어야 JS 없이도
@@ -46,21 +60,42 @@ export default async function Home() {
             원판은 aria-hidden 이라 보조기술에는 잡히지 않는다.
           */}
           {/*
-            모바일은 제목 → 기구 → 설명 순서다.
-            좁은 화면에서 글을 먼저 다 읽고 한참 내려가야 기구가 나오면
-            "공간을 아는 기구" 라는 말과 실물이 따로 논다.
-            데스크톱에서는 왼쪽 글 / 오른쪽 기구로 돌아간다.
+            원판이 바닥이고 글이 그 위에 얹힌다.
 
-            DOM 순서는 제목이 항상 먼저다 — 화면 배치만 grid-area 로 바꾼다.
+            ── 데스크톱 ──
+            둘을 같은 격자 칸('stack')에 넣어 겹친다. 원판은 화면 높이를 채우고,
+            글은 왼쪽 아래 «안전한 자리» 에 놓인다. 정면 기구 설명은 오른쪽 아래로
+            비켜 있어 서로 겹치지 않는다.
+
+            ── 모바일 ──
+            겹치면 좁아서 글이 기구를 덮는다. 그래서 위아래로 쌓되
+            기구가 먼저 온다 — 「공간을 아는 기구」 라는 말과 실물이 붙어 있어야 한다.
+
+            ── DOM 순서 ──
+            글이 먼저다. 화면 순서만 order 로 바꾼다. 그래야 JS 없이도 읽는 순서가
+            맞고, 스크린리더가 제목부터 만난다. 원판은 보조기술에 잡히지 않는다.
           */}
-          <div
-            className="grid gap-8 [grid-template-areas:'head''disc''body'] lg:grid-cols-[minmax(0,1fr)_minmax(0,42rem)] lg:items-center lg:gap-x-12 lg:gap-y-0 lg:[grid-template-areas:'head_disc''body_disc']"
-          >
-            {/* head 와 body 두 칸을 채운다. 그 사이에 원판이 들어간다. */}
-            <HeroCopy />
+          <div className="flex min-h-0 flex-1 flex-col gap-6 lg:grid lg:[grid-template-areas:'stack'] lg:gap-0">
+            {/*
+              ★ 클릭을 통과시킨다
+                이 층은 원판 «위» 에 겹쳐 있고 격자 칸 전체를 덮는다. 그대로 두면
+                눈에는 왼쪽 아래 글만 보이는데 실제로는 화면 전체가 이 상자라,
+                뒤쪽 기구도 화살표도 눌리지 않는다. 실제로 그렇게 만들어 놓고
+                한참 뒤에야 알았다.
+                진짜 눌려야 하는 것(점 · 버튼)에만 다시 켜 준다.
+            */}
+            <div className="order-2 shrink-0 lg:pointer-events-none lg:relative lg:z-10 lg:flex lg:items-end lg:[grid-area:stack]">
+              {/*
+                글 뒤에 아주 옅은 그늘을 깐다. 원판의 노란 타일이 글자 뒤로
+                지나갈 때 대비가 떨어지기 때문이다. 원판이 비쳐 보일 만큼만 덮는다.
+              */}
+              <div className="lg:pointer-events-none lg:-mx-12 lg:-mb-14 lg:w-[60%] lg:bg-[radial-gradient(135%_130%_at_0%_100%,var(--color-ink-950)_0%,var(--color-ink-950)_60%,transparent_92%)] lg:px-12 lg:pt-24 lg:pb-14">
+                <HeroCopy />
+              </div>
+            </div>
 
-            <div className="[grid-area:disc]">
-              <LineupDisc products={products} />
+            <div className="order-1 min-h-0 flex-1 lg:[grid-area:stack]">
+              <LineupDisc products={products} variant="canvas" />
             </div>
           </div>
 
@@ -80,7 +115,12 @@ export default async function Home() {
         */}
         <div className="relative z-10 bg-ink-950">
         {/* ── 10% 브랜드 스테이트먼트 ─────────────────────────── */}
-        <section className="border-t border-hairline px-6 py-28 md:px-12 md:py-40">
+        {/*
+          구역마다 바탕을 갈라놓는다.
+          10,000px 을 내려가는 동안 배경이 한 번도 안 바뀌면, 내용이 달라져도
+          «같은 화면이 계속된다» 로 읽힌다. 한 단씩만 옮겨도 스크롤에 마디가 생긴다.
+        */}
+        <section className="border-t border-hairline bg-ink-900 px-6 py-28 md:px-12 md:py-40">
           <div className="mx-auto max-w-4xl">
             <h2 className="text-[clamp(1.75rem,4vw,3rem)] leading-[1.25] font-semibold tracking-tight text-balance text-ink-100">
               좋은 기구는 조용합니다. 흔들리지 않고, 자주 고장 나지 않고,
@@ -101,8 +141,37 @@ export default async function Home() {
         {/* ── 70% 신뢰 구간 ──────────────────────────────────── */}
         <section
           aria-labelledby="trust-heading"
-          className="border-t border-hairline px-6 py-24 md:px-12 md:py-32"
+          className="relative isolate overflow-hidden border-t border-hairline px-6 py-24 md:px-12 md:py-32"
         >
+          {/*
+            대표님이 관리 화면에서 올린 사진을 바닥에 깐다.
+            아직 없으면 아무것도 걸지 않는다 — 깨진 그림보다 지금 모습이 낫다.
+          */}
+          {whyMedia && (
+            <>
+              <picture>
+                <source media="(min-width: 768px)"
+                        srcSet={whyMedia.pcSrcSet}
+                        sizes="100vw" />
+                <img
+                  src={whyMedia.mobileUrl}
+                  srcSet={whyMedia.mobileSrcSet}
+                  sizes="100vw"
+                  alt={whyMedia.alt}
+                  loading="lazy"
+                  className="absolute inset-0 -z-10 h-full w-full object-cover"
+                />
+              </picture>
+              {/*
+                사진 위에 글을 얹으므로 반드시 덮개를 둔다. 사진이 밝든 어둡든
+                글이 읽혀야 하고, 그건 사진을 고른 사람이 아니라 이 코드가 보장해야 한다.
+              */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgb(var(--scrim-rgb))_0%,rgb(var(--scrim-rgb)_/_0.9)_55%,rgb(var(--scrim-rgb)_/_0.74)_100%)]"
+              />
+            </>
+          )}
           <h2
             id="trust-heading"
             className="text-[clamp(1.5rem,3vw,2.25rem)] font-semibold tracking-tight text-ink-100"
@@ -198,7 +267,11 @@ export default async function Home() {
               평수와 천장 높이, 예상 회원 수만 알려주셔도 충분합니다.
               견적과 배치안을 같이 보내 드립니다.
             </p>
-            <div className="mt-12 flex flex-wrap justify-center gap-4">
+            {/* 떠 있는 문의 버튼이 여기서 비킨다 (FloatingCta) */}
+            <div
+              data-cta-anchor
+              className="mt-12 flex flex-wrap justify-center gap-4"
+            >
               <Link
                 href="/contact"
                 className="rounded-full bg-signal px-8 py-4 font-bold text-signal-ink transition-colors hover:bg-signal-hover"

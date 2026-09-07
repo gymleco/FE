@@ -45,7 +45,21 @@ const TAU = Math.PI * 2;
 /** 구독할 외부 상태가 없다. 참조가 매 렌더 바뀌면 재구독하므로 밖에 둔다. */
 const subscribeNothing = () => () => {};
 
-export function LineupDisc({ products }: { products: Product[] }) {
+/**
+ * variant
+ *   "inline"  글 옆에 놓이는 원판 (지금까지의 모습)
+ *   "canvas"  화면 전체를 바닥으로 깔고 글이 그 위에 얹히는 모습.
+ *             이때 정면 기구 설명은 아래 «가운데» 가 아니라 오른쪽으로 간다 —
+ *             왼쪽 아래는 제목과 버튼이 차지하기 때문이다.
+ */
+export function LineupDisc({
+  products,
+  variant = "inline",
+}: {
+  products: Product[];
+  variant?: "inline" | "canvas";
+}) {
+  const canvas = variant === "canvas";
   const items = products.slice(0, 7);
   const n = items.length;
 
@@ -54,6 +68,13 @@ export function LineupDisc({ products }: { products: Product[] }) {
 
   const box = useRef<HTMLDivElement>(null);
   const raf = useRef(0);
+  /** 지금 각도. 자동 회전이 «어디서부터» 돌지 알아야 해서 따로 들고 있는다. */
+  const angleRef = useRef(0);
+  /** PC 에서는 끌지 않는다 — 원판이 화면을 채워 «어디를 잡나» 가 애매해진다.
+   *  대신 화살표와 기구 클릭으로 넘긴다. 손가락 화면은 미는 게 자연스러워 그대로 둔다. */
+  const [dragOff, setDragOff] = useState(false);
+  /** 끌었는지 눌렀는지 가른다. 끌고 손을 뗀 것을 클릭으로 처리하면 안 된다. */
+  const moved = useRef(false);
   const velocity = useRef(0);
   const dragging = useRef(false);
   const lastX = useRef(0);
@@ -100,10 +121,74 @@ export function LineupDisc({ products }: { products: Product[] }) {
     raf.current = requestAnimationFrame(step);
   }, [n]);
 
+  useEffect(() => {
+    angleRef.current = angle;
+  }, [angle]);
+
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
 
+  /*
+   * ── PC 에서는 끌기를 끈다 ──
+   *
+   * 원판이 화면을 채우게 되면서 «어디를 잡아야 하는지» 가 애매해졌다.
+   * 배경 아무 데나 끌려도, 제목 근처에서도 원판이 잡혔다.
+   * 대신 화살표와 «기구를 눌러 앞으로» 두 가지를 준다 — 목표가 분명한 조작이다.
+   *
+   * 손가락 화면은 그대로 둔다. 거기서는 미는 동작이 자연스럽고,
+   * 화살표를 얹으면 작은 화면만 더 복잡해진다.
+   */
+  useEffect(() => {
+    const fine = window.matchMedia("(min-width: 1024px) and (pointer: fine)");
+    const decide = () => setDragOff(fine.matches);
+    decide();
+    fine.addEventListener("change", decide);
+    return () => fine.removeEventListener("change", decide);
+  }, []);
+
+  /** 목표 각도까지 부드럽게 옮긴다. */
+  const tweenTo = useCallback((to: number) => {
+    cancelAnimationFrame(raf.current);
+    const from = angleRef.current;
+    const t0 = performance.now();
+    const DUR = 700;
+    const run = (t: number) => {
+      const k = Math.min(1, (t - t0) / DUR);
+      const e = 1 - Math.pow(1 - k, 3); // 끝에서 부드럽게 선다
+      setAngle(from + (to - from) * e);
+      if (k < 1) raf.current = requestAnimationFrame(run);
+    };
+    raf.current = requestAnimationFrame(run);
+  }, []);
+
+  /** 그 기구를 정면으로 가져온다. */
+  const bringToFront = useCallback(
+    (i: number) => {
+      if (n === 0) return;
+      const slot = TAU / n;
+      const base = -i * slot;
+      /*
+       * 지금 각도에서 «가장 가까운 같은 자리» 를 고른다.
+       * 이걸 안 하면 두 칸 옆 기구를 눌렀는데 원판이 한 바퀴를 돌아 버린다.
+       */
+      const turns = Math.round((angleRef.current - base) / TAU);
+      tweenTo(base + turns * TAU);
+    },
+    [n, tweenTo],
+  );
+
+  /** 한 칸 넘긴다. dir=1 이 다음 기구다. */
+  const step = useCallback(
+    (dir: 1 | -1) => {
+      if (n === 0) return;
+      const slot = TAU / n;
+      tweenTo((Math.round(angleRef.current / slot) - dir) * slot);
+    },
+    [n, tweenTo],
+  );
+
   const onDown = (e: React.PointerEvent) => {
-    if (n === 0) return;
+    if (n === 0 || dragOff) return; // PC 는 끌지 않는다 — 화살표와 클릭으로 넘긴다
+    moved.current = false;
     cancelAnimationFrame(raf.current);
     dragging.current = true;
     velocity.current = 0;
@@ -120,6 +205,7 @@ export function LineupDisc({ products }: { products: Product[] }) {
     const now = performance.now();
     const dt = Math.max(1, now - lastT.current);
 
+    if (Math.abs(dx) > 2) moved.current = true;
     const dAngle = (dx / w) * (TAU / DRAG_TURNS);
     setAngle((a) => a + dAngle);
 
@@ -155,18 +241,34 @@ export function LineupDisc({ products }: { products: Product[] }) {
   const front = ((Math.round((-angle / TAU) * n) % n) + n) % n;
 
   return (
-    <div className="relative mx-auto w-full max-w-[42rem]">
+    <div
+      className={
+        canvas
+          ? "relative mx-auto flex h-full w-full max-w-[34rem] flex-col lg:max-w-none"
+          : "relative mx-auto w-full max-w-[42rem]"
+      }
+    >
       <div
         ref={box}
         role="group"
-        aria-label="제품 라인업 원판. 좌우 방향키로 돌려 볼 수 있습니다."
+        aria-label={
+          dragOff
+            ? "제품 라인업 원판. 기구를 누르거나 좌우 방향키로 넘길 수 있습니다."
+            : "제품 라인업 원판. 끌거나 좌우 방향키로 돌려 볼 수 있습니다."
+        }
         tabIndex={0}
         onPointerDown={onDown}
         onPointerMove={onMove}
         onPointerUp={onUp}
         onPointerCancel={onUp}
         onKeyDown={onKey}
-        className="relative aspect-square w-full cursor-grab touch-pan-y select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing"
+        className={`relative aspect-square touch-pan-y select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+          dragOff ? "" : "cursor-grab active:cursor-grabbing"
+        } ${
+          canvas
+            ? "mx-auto h-full max-h-full min-h-0 w-auto max-w-full flex-1 lg:translate-x-[4%] lg:-translate-y-[7%]"
+            : "w-full"
+        }`}
       >
         {/* 바닥 원판 — 쇼케이스의 설치 면적 격자와 같은 어휘를 쓴다 */}
         <svg
@@ -183,7 +285,14 @@ export function LineupDisc({ products }: { products: Product[] }) {
           </defs>
           <g transform={`translate(50 62) scale(1 ${TILT})`}>
             <circle r="46" fill="url(#disc-face)" />
-            <circle r="46" fill="none" stroke="var(--color-ink-600)" strokeWidth="0.5" />
+            {/*
+              바깥 링만 브랜드색으로 또렷하게 둔다.
+              ink-600 으로 두면 바탕과 대비가 2:1 도 안 돼서, 이 화면에서
+              가장 눈에 띄어야 할 «기울어진 판» 이 보이지 않는다.
+              안쪽 보조선은 흐린 채로 둬야 바깥 링이 살아난다.
+            */}
+            <circle r="46" fill="none" stroke="var(--color-accent)"
+                    strokeOpacity="0.45" strokeWidth="0.6" />
             <circle r="31" fill="none" stroke="var(--color-ink-700)" strokeWidth="0.4" />
             <circle r="16" fill="none" stroke="var(--color-ink-700)" strokeWidth="0.4" />
             {/*
@@ -237,13 +346,68 @@ export function LineupDisc({ products }: { products: Product[] }) {
                 } as const)
               : undefined;
 
+            const isFront = i === front;
             return (
-              <div key={p.slug} style={style} className="w-[19%] min-w-20">
+              /*
+                누르면 그 기구가 앞으로 온다.
+                버튼으로 두는 이유는 마우스만이 아니라 탭 · 엔터로도 닿아야 하기
+                때문이다. 이미 앞에 있는 기구는 누를 것이 없으므로 끈다.
+              */
+              <button
+                key={p.slug}
+                type="button"
+                style={style}
+                disabled={isFront}
+                aria-label={`${p.nameKo} 앞으로 가져오기`}
+                onClick={() => {
+                  // 끌고 손을 뗀 것을 클릭으로 오해하면 안 된다
+                  if (moved.current) return;
+                  setTouched(true);
+                  bringToFront(i);
+                }}
+                className={`w-[19%] min-w-20 rounded-xs outline-none transition-[filter] focus-visible:ring-2 focus-visible:ring-accent ${
+                  isFront
+                    ? "cursor-default"
+                    : "cursor-pointer hover:brightness-125"
+                }`}
+              >
                 <DiscItem product={p} />
-              </div>
+              </button>
             );
           })}
         </div>
+
+        {/*
+          앞뒤로 한 칸씩.
+
+          원판 «아래» 에 둔다. 옆에 두면 화면을 채운 원판의 좌우 끝까지 손이
+          가야 하고, 왼쪽은 제목 자리와 겹친다.
+          끌 수 있는 화면(손가락)에서는 내보내지 않는다 — 미는 동작으로 충분하고
+          작은 화면만 복잡해진다.
+        */}
+        {dragOff && n > 1 && (
+          <div className="absolute top-[84%] left-1/2 flex -translate-x-1/2 gap-2">
+            {([-1, 1] as const).map((dir) => (
+              <button
+                key={dir}
+                type="button"
+                aria-label={dir === 1 ? "다음 기구" : "이전 기구"}
+                onClick={() => {
+                  setTouched(true);
+                  step(dir);
+                }}
+                className="flex size-10 items-center justify-center rounded-full border border-hairline bg-ink-900/70 text-ink-300 backdrop-blur transition-colors hover:border-accent hover:text-ink-100 focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" strokeWidth="2.2"
+                     strokeLinecap="round" strokeLinejoin="round"
+                     aria-hidden="true">
+                  <path d={dir === 1 ? "M9 6l6 6-6 6" : "M15 6l-6 6 6 6"} />
+                </svg>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/*
@@ -258,7 +422,11 @@ export function LineupDisc({ products }: { products: Product[] }) {
       */}
       <div
         aria-live="polite"
-        className="mt-4 min-h-[5.5rem] px-2 text-center sm:min-h-[5rem]"
+        className={`min-h-[5.5rem] px-2 text-center sm:min-h-[5rem] ${
+          canvas
+            ? "mt-4 shrink-0 lg:absolute lg:top-0 lg:right-0 lg:mt-0 lg:max-w-xs lg:px-0 lg:text-right"
+            : "mt-4"
+        }`}
       >
         <p className="font-display text-lg font-bold tracking-tight text-ink-100">
           {items[front].nameKo}
@@ -270,7 +438,11 @@ export function LineupDisc({ products }: { products: Product[] }) {
           </p>
         )}
         {items[front].summary && (
-          <p className="mx-auto mt-2 max-w-md text-sm text-pretty text-ink-300">
+          <p
+            className={`mt-2 max-w-md text-sm text-pretty text-ink-300 ${
+              canvas ? "mx-auto lg:mx-0 lg:ml-auto" : "mx-auto"
+            }`}
+          >
             {items[front].summary}
           </p>
         )}
@@ -283,11 +455,15 @@ export function LineupDisc({ products }: { products: Product[] }) {
       */}
       <p
         aria-hidden="true"
-        className={`pointer-events-none mt-2 text-center font-display text-[0.62rem] tracking-[0.22em] text-ink-400 uppercase transition-opacity duration-500 ${
-          touched ? "opacity-0" : "opacity-100"
-        }`}
+        className={`pointer-events-none font-display text-[0.72rem] tracking-[0.22em] text-ink-300 uppercase transition-opacity duration-500 ${
+          canvas
+            ? "mt-3 shrink-0 text-center lg:absolute lg:top-28 lg:right-0 lg:mt-0 lg:text-right"
+            : "mt-3 text-center"
+        } ${!dragOff && touched ? "opacity-0" : "opacity-100"}`}
       >
-        ← 끌어서 돌려 보세요 →
+        {dragOff
+          ? "기구를 누르면 앞으로 옵니다"
+          : "← 끌어서 돌려 보세요 →"}
       </p>
     </div>
   );

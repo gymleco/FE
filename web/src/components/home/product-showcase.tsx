@@ -9,6 +9,7 @@ import { useGSAP } from "@gsap/react";
 import { CATEGORY_LABEL, type Product } from "@/lib/catalog";
 import { formatPyeong } from "@/lib/area";
 import { ProductMedia } from "@/components/product-media";
+import { TYPICAL_FOOTPRINT_M2 } from "@/lib/catalog";
 
 /**
  * 제품 라인업 시퀀스 — 메인의 20~70% 구간 (기획서 §3.1)
@@ -137,8 +138,10 @@ export function ProductShowcase({ products }: { products: Product[] }) {
               );
             }
 
-            const num = panel.querySelector<HTMLElement>("[data-area]");
-            if (num) {
+            // 큰 숫자와 도면 범례 둘 다 굴린다. 하나만 굴리면 넘어가는 동안
+            // 같은 값이 두 개로 보인다.
+            const nums = [...panel.querySelectorAll<HTMLElement>("[data-area]")];
+            if (nums.length > 0) {
               const counter = { v: prev };
               tl.to(
                 counter,
@@ -148,7 +151,8 @@ export function ProductShowcase({ products }: { products: Product[] }) {
                   duration: 0.55,
                   immediateRender: false,
                   onUpdate: () => {
-                    num.textContent = counter.v.toFixed(1);
+                    const t = counter.v.toFixed(1);
+                    for (const n of nums) n.textContent = t;
                   },
                 },
                 i - 1 + 0.25,
@@ -266,8 +270,23 @@ export function ProductShowcase({ products }: { products: Product[] }) {
             key={product.slug}
             className="showcase-panel flex flex-col justify-center gap-10 border-b border-hairline py-16 last:border-b-0 md:grid md:grid-cols-2 md:items-center md:gap-16 md:border-b-0 md:px-12 md:py-0"
           >
-            {/* ── 텍스트 ── */}
-            <div className="order-2 md:order-1">
+            {/*
+              ── 텍스트 ──
+
+              가운데 한 장만 좌우를 뒤집는다. 다섯 장이 모두 «왼쪽 글 / 오른쪽 그림»
+              이면 내용이 바뀌어도 눈에는 같은 화면이 다섯 번 지나가는 것으로 읽혀
+              실제보다 길게 느껴진다. 한 장만 바꿔도 «흐름» 이 생긴다.
+
+              전부 번갈아 뒤집지 않는 이유는 패널이 겹쳐 사라지는 방식이라,
+              매번 뒤집으면 넘어가는 동안 글이 양쪽에 겹쳐 보이기 때문이다.
+            */}
+            <div
+              className={
+                index === Math.floor(products.length / 2)
+                  ? "order-2 md:order-2"
+                  : "order-2 md:order-1"
+              }
+            >
               <div className="flex items-center gap-3">
                 <span className="font-display text-[0.65rem] tracking-[0.28em] text-accent uppercase">
                   {CATEGORY_LABEL[product.category]}
@@ -328,6 +347,26 @@ export function ProductShowcase({ products }: { products: Product[] }) {
                 </div>
               </dl>
 
+              {/*
+                이 구간이 하려는 말을 문장으로 한 번 더 한다.
+                −43% 라는 숫자는 도면 범례에 작게만 있어서, 스크롤하는 사람이
+                «그래서 뭐가 좋은데» 에 닿지 못한 채 지나간다. 왼쪽 글이 위에서
+                끝나 아래 3분의 1이 비어 있던 자리이기도 하다.
+              */}
+              {product.footprintM2 != null &&
+                product.footprintM2 < TYPICAL_FOOTPRINT_M2 && (
+                  <p className="mt-7 border-l-2 border-plot pl-4 text-pretty text-ink-300">
+                    같은 종류의 일반 기구보다{" "}
+                    <strong className="tabular font-semibold text-ink-100">
+                      {Math.round(
+                        (1 - product.footprintM2 / TYPICAL_FOOTPRINT_M2) * 100,
+                      )}
+                      %
+                    </strong>{" "}
+                    덜 차지합니다.
+                  </p>
+                )}
+
               <Link
                 href={`/products/${product.slug}`}
                 className="mt-8 inline-flex items-center gap-2 border-b border-ink-600 pb-1 text-sm font-medium text-ink-100 transition-colors hover:border-accent hover:text-accent"
@@ -338,7 +377,13 @@ export function ProductShowcase({ products }: { products: Product[] }) {
             </div>
 
             {/* ── 시각 자료 ── */}
-            <div className="order-1 md:order-2">
+            <div
+              className={
+                index === Math.floor(products.length / 2)
+                  ? "order-1 md:order-1"
+                  : "order-1 md:order-2"
+              }
+            >
               {/*
                * 첫 패널만 즉시 로딩한다. 나머지는 스크롤로 도달해야 보이므로
                * 지연 로딩이 맞다 — 14개 제품 사진을 첫 화면에서 전부 받으면

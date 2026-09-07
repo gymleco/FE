@@ -36,6 +36,18 @@
   --color-accent: #ffd400;       /* 글자 · 테두리 · 포커스 링 */
   --color-accent-hover: #ffe14d;
 
+  /* 사진 위에 글을 얹을 때 까는 덮개.
+     알파를 쓰려면 색을 «숫자 세 개» 로 들고 있어야 해서 --color-* 와 따로 둔다.
+     이걸 검정으로 박아 두면 밝은 테마에서 흰색 → 검정 그라디언트가 되어
+     글이 중간에서 흐려진다. 실제로 그렇게 만들어 놓고 화면을 보고 알았다. */
+  --scrim-rgb: 8 9 10;
+
+  /* 면적 도면처럼 «정보를 담은 도형» 을 칠하는 색.
+     글자(4.5:1)와 기준이 달라서(WCAG 1.4.11 비텍스트 3:1) 따로 둔다.
+     어두운 테마의 이 값은 예전 fill-accent/85 가 합성되던 색 그대로다 —
+     보이는 모습을 바꾸지 않으려고 맞췄다. */
+  --color-plot: #dab600;
+
   /* ── 보조 ── */
   --color-steel: #2b5f8c;
   --color-danger: #e5484d;
@@ -96,6 +108,12 @@
      글자로 쓰는 노랑만 읽히는 값으로 내린다. */
   --color-accent: #8a5a00;
   --color-accent-hover: #6b4600;
+
+  --scrim-rgb: 247 247 245;
+
+  /* 85% 로 칠하면 어떤 값을 넣어도 3:1 을 넘기기 어려워서 100% 로 칠한다.
+     이 값이 흰 바탕에서 3.60:1 — 지금의 겨자색보다 확실히 노랗다. */
+  --color-plot: #b07600;
 
   --color-hairline: rgb(8 9 10 / 0.14);
   --color-hairline-dark: rgb(255 255 255 / 0.14);
@@ -161,6 +179,13 @@ body {
   color: var(--color-ink-100);
   font-family: var(--font-sans);
   font-feature-settings: "tnum" 0;
+  /*
+   * 한글은 단어 한가운데서 갈라지면 안 된다.
+   * 브라우저 기본값이 영어 기준이라 "…보내 드립 / 니다" 처럼 끊긴다.
+   * 대신 긴 URL 이 칸을 넘치지 않도록 overflow-wrap 을 함께 둔다.
+   */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;

@@ -110,7 +110,7 @@ export function FootprintDiagram({
           y={originY - productD}
           width={productW}
           height={productD}
-          className="fill-accent/85 stroke-accent"
+          className="fill-plot stroke-plot"
           strokeWidth="0.6"
           style={{ transformBox: "fill-box", transformOrigin: "left bottom" }}
         />
@@ -119,16 +119,22 @@ export function FootprintDiagram({
       {!compact && (
         <figcaption className="mt-5 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-sm">
           <span className="flex items-center gap-2 text-ink-300">
-            {/* 범례 네모는 위 도형(fill-accent)과 같은 토큰을 쓴다. 하나만
+            {/* 범례 네모는 위 도형(fill-plot)과 같은 토큰을 쓴다. 하나만
                 signal 로 두면 밝은 테마에서 "노랑 = 짐레코" 라고 적어 놓고
                 정작 도형은 앰버가 되어 범례가 거짓말을 한다. */}
             <span
               aria-hidden="true"
-              className="inline-block size-3 rounded-xs bg-accent"
+              className="inline-block size-3 rounded-xs bg-plot"
             />
             짐레코{" "}
+            {/*
+              큰 숫자와 같은 표시를 단다. 쇼케이스가 넘어가는 0.55초 동안
+              큰 숫자는 굴러가는데 여기가 정지값이면, 한 화면에 2.0m² 와
+              1.9m² 가 같이 보인다. 이 사이트가 파는 것이 «면적이 정확하다»
+              라서 잠깐이라도 두 개로 보이면 안 된다.
+            */}
             <strong className="tabular font-semibold text-ink-100">
-              {footprintM2}m²
+              <span data-area={footprintM2}>{footprintM2}</span>m²
             </strong>
             <span className="tabular text-ink-400">
               {formatPyeong(footprintM2)}

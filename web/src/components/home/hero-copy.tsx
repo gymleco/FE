@@ -127,30 +127,33 @@ export function HeroCopy() {
   };
 
   return (
-    <>
-      {/* 높이를 고정한다 — 문구마다 길이가 달라 그대로 두면 원판이 위아래로 튄다 */}
-      <div className="[grid-area:head] lg:min-h-[15.5rem]" {...pause}>
-        <div {...fade}>
-          <p className="font-display text-[0.7rem] tracking-[0.4em] text-accent uppercase">
-            {slide.eyebrow}
-          </p>
+    /*
+      한 덩어리다.
+      예전에는 head · body 두 칸으로 나뉘어 원판 좌우로 갈라졌는데,
+      이제 원판이 화면 바닥으로 깔리고 이 글이 그 «위에» 얹힌다.
+      나뉘어 있을 이유가 없어졌고, 나뉜 채로 두면 두 덩어리가 각자
+      가운데로 밀려나 사이에 구멍이 났다.
+    */
+    <div className="max-w-xl" {...pause}>
+      <div {...fade}>
+        <p className="font-display text-[0.7rem] tracking-[0.4em] text-accent uppercase">
+          {slide.eyebrow}
+        </p>
 
-          {/* 문서에 하나뿐인 h1. 글자만 바뀐다. */}
-          <h1 className="mt-6 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.05] font-bold tracking-tight text-balance text-ink-100">
-            {slide.title[0]}
-            <br />
-            {slide.title[1]}
-          </h1>
-        </div>
+        {/* 문서에 하나뿐인 h1. 글자만 바뀐다. */}
+        <h1 className="mt-6 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.05] font-bold tracking-tight text-balance text-ink-100">
+          {slide.title[0]}
+          <br />
+          {slide.title[1]}
+        </h1>
       </div>
 
-      <div className="[grid-area:body]" {...pause}>
-        <p
-          {...fade}
-          className={`${fade.className} max-w-xl text-pretty text-ink-300 md:text-lg lg:min-h-[5.5rem]`}
-        >
-          {slide.body}
-        </p>
+      <p
+        {...fade}
+        className={`${fade.className} mt-6 text-pretty text-ink-300 md:text-lg lg:min-h-[4.5rem]`}
+      >
+        {slide.body}
+      </p>
 
         {/* 직접 고를 수 있게 — 자동으로만 바뀌면 놓친 문구를 다시 볼 수 없다 */}
         <div
@@ -166,7 +169,7 @@ export function HeroCopy() {
               aria-selected={i === index}
               aria-label={s.title.join(" ")}
               onClick={() => go(i)}
-              className="group flex h-6 items-center outline-none"
+              className="group pointer-events-auto flex h-6 items-center outline-none"
             >
               <span
                 className={`block h-[3px] rounded-full transition-all duration-300 ${
@@ -179,21 +182,25 @@ export function HeroCopy() {
           ))}
         </div>
 
+        {/*
+          여기엔 data-cta-anchor 를 달지 않는다.
+          히어로가 sticky 라 뒤에 계속 남아 있어서, 표시를 달면 화면을
+          영영 벗어나지 않아 떠 있는 버튼이 페이지 내내 숨어 버린다.
+        */}
         <div className="mt-8 flex flex-wrap gap-4">
           <Link
             href="/contact"
-            className="rounded-full bg-signal px-6 py-3 text-sm font-bold text-signal-ink transition-colors hover:bg-signal-hover"
+            className="pointer-events-auto rounded-full bg-signal px-6 py-3 text-sm font-bold text-signal-ink transition-colors hover:bg-signal-hover"
           >
             무료 시연 신청
           </Link>
           <Link
             href="/products"
-            className="rounded-full border border-ink-600 px-6 py-3 text-sm font-medium text-ink-100 transition-colors hover:border-ink-300"
+            className="pointer-events-auto rounded-full border border-ink-600 px-6 py-3 text-sm font-medium text-ink-100 transition-colors hover:border-ink-300"
           >
             제품 라인업 보기
           </Link>
-        </div>
       </div>
-    </>
+    </div>
   );
 }
