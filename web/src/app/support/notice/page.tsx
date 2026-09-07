@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { getNotices } from "@/lib/support-source";
 
 export const metadata: Metadata = {
-  title: "공지사항 | GYMLECO KOREA",
+  title: "공지사항",
   description: "서비스 점검, 배송 일정, 운영 안내를 알려 드립니다.",
 };
 

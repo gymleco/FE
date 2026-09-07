@@ -19,9 +19,6 @@ const REGIONS = [
   "대전", "울산", "강원", "충청", "전라", "경상", "제주",
 ] as const;
 
-/** 대표 전화 — 대표님께 받아 교체한다. 전송 실패 시 대체 경로로 노출된다. */
-const FALLBACK_PHONE = "02-0000-0000";
-
 type Status = "idle" | "sending" | "error" | "rateLimited";
 
 /**
@@ -36,13 +33,17 @@ type Status = "idle" | "sending" | "error" | "rateLimited";
  *  - 동의 체크박스는 기본 해제. 미리 체크해 두면 동의로 인정되지 않는다.
  *  - 마케팅 동의는 반드시 별도 항목. 필수 동의에 묶으면 위법이다.
  *  - 전송 실패 시 전화번호를 함께 안내한다. 폼이 죽었다고 문의를
- *    놓칠 수는 없다.
+ *    놓칠 수는 없다. 다만 «없는 번호» 를 적어 두지는 않는다 —
+ *    안내한 번호가 안 받으면 폼이 죽은 것보다 나쁘다.
  */
 export function ContactForm({
   products,
+  phone,
 }: {
   /** 관심 제품 체크박스. 서버에서 실데이터를 받아 넘긴다. */
   products: { slug: string; nameKo: string }[];
+  /** 대표 전화. 관리 화면에 값이 없으면 빈 문자열로 오고, 그러면 안내하지 않는다. */
+  phone: string;
 }) {
   const router = useRouter();
 
@@ -333,11 +334,15 @@ export function ContactForm({
 
         {status === "error" && (
           <p role="alert" className="mt-5 border border-danger p-4 text-sm text-ink-100">
-            전송에 실패했습니다. 잠시 후 다시 시도해 주시거나, 급하시면
-            전화로 문의해 주세요 —{" "}
-            <a href={`tel:${FALLBACK_PHONE}`} className="font-semibold underline">
-              {FALLBACK_PHONE}
-            </a>
+            전송에 실패했습니다. 잠시 후 다시 시도해 주세요.
+            {phone && (
+              <>
+                {" "}급하시면 전화로 문의해 주세요 —{" "}
+                <a href={`tel:${phone.replace(/[^0-9+]/g, "")}`} className="font-semibold underline">
+                  {phone}
+                </a>
+              </>
+            )}
           </p>
         )}
         {status === "rateLimited" && (

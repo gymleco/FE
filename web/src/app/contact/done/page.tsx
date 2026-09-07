@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/site-header";
+import { getSiteInfo } from "@/lib/settings-source";
 
 export const metadata: Metadata = {
   title: "문의가 접수되었습니다",
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function ContactDonePage() {
+export default async function ContactDonePage() {
+  const site = await getSiteInfo();
+
   return (
     <>
       <SiteHeader />
@@ -34,9 +37,22 @@ export default function ContactDonePage() {
             담당자가 <strong className="text-ink-100">영업일 기준 1일 이내</strong>에
             연락드리겠습니다.
           </p>
-          <p className="mt-3 text-sm text-ink-400">
-            급하시면 전화로 문의해 주세요 — 02-0000-0000
-          </p>
+          {/*
+            번호가 없으면 이 줄을 아예 내보내지 않는다.
+            «급하시면 전화 주세요» 밑에 안 받는 번호가 적혀 있는 것이
+            아무 번호도 없는 것보다 나쁘다.
+          */}
+          {site.phone && (
+            <p className="mt-3 text-sm text-ink-400">
+              급하시면 전화로 문의해 주세요 —{" "}
+              <a
+                href={`tel:${site.phone.replace(/[^0-9+]/g, "")}`}
+                className="underline underline-offset-2"
+              >
+                {site.phone}
+              </a>
+            </p>
+          )}
 
           <div className="mt-12 flex flex-wrap justify-center gap-3">
             <Link

@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { getFaqs } from "@/lib/support-source";
 
 export const metadata: Metadata = {
-  title: "자주 묻는 질문 | GYMLECO KOREA",
+  title: "자주 묻는 질문",
   description:
     "가격, 배송·설치, 중고 등급, 사후관리에 대해 자주 묻는 질문을 모았습니다.",
 };

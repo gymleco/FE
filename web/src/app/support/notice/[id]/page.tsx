@@ -12,9 +12,9 @@ type Params = { params: Promise<{ id: string }> };
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { id } = await params;
   const notice = await getNotice(Number(id));
-  if (!notice) return { title: "공지사항 | GYMLECO KOREA" };
+  if (!notice) return { title: "공지사항" };
   return {
-    title: `${notice.title} | GYMLECO KOREA`,
+    title: `${notice.title}`,
     robots: { index: true, follow: true },
   };
 }

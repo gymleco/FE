@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact-form";
 import { getProducts } from "@/lib/products-source";
+import { getSiteInfo } from "@/lib/settings-source";
 import { PageHeader } from "@/components/page-header";
 import { SiteHeader } from "@/components/site-header";
 
@@ -13,7 +14,10 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const products = await getProducts("EQUIPMENT");
+  const [products, site] = await Promise.all([
+    getProducts("EQUIPMENT"),
+    getSiteInfo(),
+  ]);
 
   return (
     <>
@@ -28,6 +32,7 @@ export default async function ContactPage() {
         <section className="px-6 py-12 md:px-12">
           <ContactForm
             products={products.map((p) => ({ slug: p.slug, nameKo: p.nameKo }))}
+            phone={site.phone}
           />
         </section>
 
