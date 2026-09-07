@@ -244,7 +244,13 @@ export function LineupDisc({
     <div
       className={
         canvas
-          ? "relative mx-auto flex h-full w-full max-w-[34rem] flex-col lg:max-w-none"
+          ? /*
+               좁은 화면에서는 기구를 크게 키우느라 양옆 기구가 판 밖으로 나간다.
+               넘친 만큼 가로 스크롤이 생기면 안 되므로 여기서 잘라 낸다.
+               hidden 이 아니라 clip 이다 — hidden 은 스크롤 컨테이너를 만들어
+               위쪽 sticky 히어로까지 영향을 준다.
+            */
+            "relative mx-auto flex h-full w-full max-w-[34rem] flex-col overflow-x-clip lg:max-w-none lg:overflow-x-visible"
           : "relative mx-auto w-full max-w-[42rem]"
       }
     >
@@ -266,7 +272,16 @@ export function LineupDisc({
           dragOff ? "" : "cursor-grab active:cursor-grabbing"
         } ${
           canvas
-            ? "mx-auto h-full max-h-full min-h-0 w-auto max-w-full flex-1 lg:translate-x-[4%] lg:-translate-y-[7%]"
+            ? /*
+                 ★ 모바일에서만 판을 키운다.
+                   이 상자는 정사각형이고 «높이» 로 크기가 정해진다. 좁은 화면에서는
+                   히어로 글이 세로를 다 먹어서, 375px 화면인데 판이 216px 밖에
+                   안 됐다 — 좌우로 111px 이 그냥 비어 있었다.
+                   높이를 더 뺏어 오려면 글을 줄여야 하므로, 대신 «칠 자리» 만
+                   넓힌다. 원판 중심(50% 62%)을 기준으로 확대하면 위쪽의 빈 공간을
+                   쓰면서 판은 화면 폭 안에 그대로 들어온다.
+              */
+              "mx-auto h-full max-h-full min-h-0 w-auto max-w-full flex-1 origin-[50%_34%] scale-[1.75] lg:translate-x-[4%] lg:-translate-y-[7%] lg:scale-100"
             : "w-full"
         }`}
       >
@@ -340,9 +355,18 @@ export function LineupDisc({
                   left: `${50 + Math.sin(theta) * 38}%`,
                   top: `${62 + Math.cos(theta) * 38 * TILT}%`,
                   transform: `translate(-50%, -100%) scale(${0.42 + depth * 0.58})`,
-                  opacity: 0.3 + depth * 0.7,
+                  /*
+                   * 좁은 화면에서는 기구를 크게 키운 만큼 서로 겹친다.
+                   * 겹치는 것 자체는 «헬스장 바닥» 처럼 읽혀 괜찮지만,
+                   * 뒤 기구가 앞 기구와 같은 세기로 보이면 무엇이 주인공인지
+                   * 알 수 없는 덩어리가 된다. 뒤로 갈수록 더 빨리 흐려지게 한다.
+                   */
+                  opacity: dragOff ? 0.3 + depth * 0.7 : 0.14 + depth * 0.86,
                   zIndex: Math.round(depth * 100),
-                  filter: depth < 0.45 ? "blur(1.2px)" : undefined,
+                  filter:
+                    depth < (dragOff ? 0.45 : 0.9)
+                      ? `blur(${(1 - depth) * (dragOff ? 2.2 : 3.4)}px)`
+                      : undefined,
                 } as const)
               : undefined;
 
@@ -365,7 +389,13 @@ export function LineupDisc({
                   setTouched(true);
                   bringToFront(i);
                 }}
-                className={`w-[19%] min-w-20 rounded-xs outline-none transition-[filter] focus-visible:ring-2 focus-visible:ring-accent ${
+                /*
+                  칸 하나의 크기. 원판 지름 대비 비율이라 화면 크기와 무관하게
+                  같은 비례로 커진다. 자리표시자 타일 때는 작아도 됐지만
+                  실제 기구 사진이 들어오면서 «무엇을 파는지» 가 안 읽힐 만큼
+                  작았다. 뒤 칸이 앞 칸을 가리기 직전까지 키운 값이다.
+                */
+                className={`w-[27%] min-w-[7.5rem] lg:min-w-0 rounded-xs outline-none transition-[filter] focus-visible:ring-2 focus-visible:ring-accent ${
                   isFront
                     ? "cursor-default"
                     : "cursor-pointer hover:brightness-125"
@@ -489,7 +519,7 @@ function DiscItem({ product }: { product: Product }) {
           draggable={false}
           loading="lazy"
           decoding="async"
-          className="h-auto w-full object-contain drop-shadow-[var(--shadow-lift)]"
+          className="h-auto w-full object-contain [filter:var(--cutout-lift)]"
         />
       </div>
     );
