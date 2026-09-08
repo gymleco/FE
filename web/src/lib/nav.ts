@@ -51,6 +51,13 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { href: "/contact?type=QUOTE", label: "견적 문의" },
       { href: "/contact?type=DEMO", label: "무료 시연 신청" },
+      /*
+       * 정품 확인은 고객센터에 둔다.
+       * 「상품」 아래가 아닌 이유는, 이 화면을 찾는 사람은 무엇을 살지
+       * 고르는 중이 아니라 «이미 눈앞에 있는 기구» 를 의심하는 중이기
+       * 때문이다. 중고 거래 현장에서 폰으로 여는 화면이다.
+       */
+      { href: "/verify", label: "정품 확인" },
       { href: "/support/faq", label: "자주 묻는 질문" },
       { href: "/support/notice", label: "공지사항" },
       { href: "/privacy", label: "개인정보처리방침" },
