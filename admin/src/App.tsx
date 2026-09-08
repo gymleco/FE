@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router";
+import { MachineLookup } from "@/pages/machine-lookup";
 
 import { AuthProvider, useAuth } from "@/auth/auth";
 import { Shell } from "@/components/shell";
@@ -63,6 +64,8 @@ function Gate() {
         <Route path="used" element={<UsedList />} />
         <Route path="used/new" element={<UsedForm />} />
         <Route path="used/:id" element={<UsedForm />} />
+
+        <Route path="machines" element={<MachineLookup />} />
 
         <Route path="banners" element={<BannerList />} />
         <Route path="banners/new" element={<BannerForm />} />

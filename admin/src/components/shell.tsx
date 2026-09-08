@@ -31,6 +31,7 @@ const NAV: { heading?: string; items: { to: string; label: string; end?: boolean
     items: [
       { to: "/products", label: "제품" },
       { to: "/used", label: "중고" },
+      { to: "/machines", label: "일련번호 조회" },
     ],
   },
   {

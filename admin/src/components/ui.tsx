@@ -199,7 +199,8 @@ export function Card({
   children,
   className = "",
 }: {
-  title?: string;
+  /* 문자열만 받다가 넓혔다 — 제목 옆에 상태 배지를 다는 화면이 생겼다 */
+  title?: ReactNode;
   action?: ReactNode;
   children: ReactNode;
   className?: string;
