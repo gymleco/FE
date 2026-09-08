@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { BrandLogo } from "@/components/brand-logo";
 import { NAV_GROUPS, pathOf } from "@/lib/nav";
 
 /**
@@ -89,9 +90,7 @@ export function MobileNav() {
         className="fixed top-0 right-0 z-50 flex h-dvh w-[min(21rem,86vw)] flex-col overflow-y-auto border-l border-hairline bg-ink-900"
       >
         <div className="flex items-center justify-between border-b border-hairline px-5 py-4">
-          <span className="font-display text-sm font-black tracking-[0.18em] text-ink-100">
-            GYMLECO
-          </span>
+          <BrandLogo height={20} />
           <button
             type="button"
             onClick={close}

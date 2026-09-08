@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { BrandLogo } from "@/components/brand-logo";
 import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NAV_GROUPS, pathOf } from "@/lib/nav";
@@ -62,9 +63,10 @@ export function SiteHeader() {
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-3 md:px-12">
         <Link
           href="/"
-          className="font-display justify-self-start text-base font-black tracking-[0.18em] text-ink-100"
+          aria-label="GYMLECO 홈"
+          className="justify-self-start rounded-xs focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
         >
-          GYMLECO
+          <BrandLogo height={22} />
         </Link>
 
         <nav aria-label="주요" className="hidden lg:block">

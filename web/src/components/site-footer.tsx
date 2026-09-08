@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 
 import { getSiteInfo, safeHref } from "@/lib/settings-source";
 
@@ -48,9 +49,7 @@ export async function SiteFooter() {
     <footer className="border-t border-hairline px-6 py-16 md:px-12">
       <div className="flex flex-col gap-12 md:flex-row md:justify-between">
         <div>
-          <p className="font-display text-lg font-black tracking-[0.18em] text-ink-100">
-            GYMLECO
-          </p>
+          <BrandLogo height={26} />
           <p className="mt-3 max-w-xs text-sm text-ink-400">
             스웨덴 본사 직영. 공간을 아는 헬스기구.
           </p>
