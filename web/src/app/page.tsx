@@ -62,7 +62,7 @@ export default async function Home() {
             sticky 는 조상 중 하나라도 overflow 가 visible 이 아니면
             그 안에 갇혀 동작하지 않는다.
         */}
-        <section className="sticky top-0 z-0 flex h-[100svh] flex-col">
+        <section className="sticky top-[var(--header-h)] z-0 flex h-[calc(100svh-var(--header-h))] flex-col">
           {/*
             h-full 이 아니라 flex-1 이다. h-full 을 주면 히어로가 세로를
             다 먹어 아래 「Scroll」 이 화면 밖으로 밀려난다.

@@ -241,7 +241,7 @@ export function HeroStage({ products }: { products: Product[] }) {
                       옆 기구는 흐리게·작게 둔다 — «있다» 는 것만 알리고
                       주인공을 빼앗지 않는다.
                     */
-                    className={`relative h-[42svh] w-auto object-contain transition-[opacity,transform,filter] duration-500 [filter:var(--cutout-lift)] lg:h-[70svh] ${
+                    className={`relative h-[36svh] w-auto object-contain transition-[opacity,transform,filter] duration-500 [filter:var(--cutout-lift)] lg:h-[64svh] ${
                       i === active
                         ? "scale-100 opacity-100"
                         : "scale-90 opacity-35 blur-[1.5px]"
