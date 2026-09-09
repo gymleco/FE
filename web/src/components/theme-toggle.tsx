@@ -48,16 +48,16 @@ function subscribe(onChange: () => void) {
 }
 
 const readTheme = (): Theme =>
-  document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 
-/** 서버에는 브라우저 저장소가 없다. 기본값인 다크로 그린다. */
-const serverTheme = (): Theme => "dark";
+/** 서버에는 브라우저 저장소가 없다. 기본값인 라이트로 그린다. */
+const serverTheme = (): Theme => "light";
 
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const theme = useSyncExternalStore(subscribe, readTheme, serverTheme);
 
   const toggle = useCallback(() => {
-    const next: Theme = readTheme() === "light" ? "dark" : "light";
+    const next: Theme = readTheme() === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     // 모바일 브라우저의 상단 바 색까지 같이 넘긴다. 이게 남아 있으면
     // 밝은 페이지 위에 검은 띠가 얹혀 어중간해 보인다.

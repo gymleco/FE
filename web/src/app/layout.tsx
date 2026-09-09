@@ -54,7 +54,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08090a",
+  themeColor: "#f7f7f5",
   width: "device-width",
   initialScale: 1,
   // 확대를 막지 않는다 — 접근성 요구사항이다.

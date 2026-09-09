@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { FloatingCta } from "@/components/floating-cta";
 import { SiteHeader } from "@/components/site-header";
-import { HeroCopy } from "@/components/home/hero-copy";
-import { LineupDisc } from "@/components/home/lineup-disc";
+import { HeroStage } from "@/components/home/hero-stage";
 import { getSectionMedia } from "@/lib/section-media";
 import { ProductShowcase } from "@/components/home/product-showcase";
 import { getProducts } from "@/lib/products-source";
@@ -53,55 +52,28 @@ export default async function Home() {
         */}
         <div data-cta-anchor aria-hidden="true" className="h-px" />
 
-        <section className="sticky top-0 z-0 flex h-[100svh] flex-col justify-between px-6 py-10 md:px-12 md:py-14">
+        {/*
+          히어로 — 기구 한 대를 크게, 옆 기구는 살짝 걸치게.
+
+          sticky 로 두어 다음 구역이 그 위를 덮으며 올라온다. 스크롤을
+          시작하는 순간 화면이 통째로 밀려나는 대신 뒤 내용이 미끄러져 온다.
+
+          ★ overflow-hidden 을 여기에 두면 안 된다.
+            sticky 는 조상 중 하나라도 overflow 가 visible 이 아니면
+            그 안에 갇혀 동작하지 않는다.
+        */}
+        <section className="sticky top-0 z-0 flex h-[100svh] flex-col">
           {/*
-            글이 먼저, 원판이 뒤. DOM 순서를 이렇게 두어야 JS 없이도
-            읽는 순서가 맞고, 스크린리더가 제목부터 만난다.
-            원판은 aria-hidden 이라 보조기술에는 잡히지 않는다.
+            h-full 이 아니라 flex-1 이다. h-full 을 주면 히어로가 세로를
+            다 먹어 아래 「Scroll」 이 화면 밖으로 밀려난다.
           */}
-          {/*
-            원판이 바닥이고 글이 그 위에 얹힌다.
-
-            ── 데스크톱 ──
-            둘을 같은 격자 칸('stack')에 넣어 겹친다. 원판은 화면 높이를 채우고,
-            글은 왼쪽 아래 «안전한 자리» 에 놓인다. 정면 기구 설명은 오른쪽 아래로
-            비켜 있어 서로 겹치지 않는다.
-
-            ── 모바일 ──
-            겹치면 좁아서 글이 기구를 덮는다. 그래서 위아래로 쌓되
-            기구가 먼저 온다 — 「공간을 아는 기구」 라는 말과 실물이 붙어 있어야 한다.
-
-            ── DOM 순서 ──
-            글이 먼저다. 화면 순서만 order 로 바꾼다. 그래야 JS 없이도 읽는 순서가
-            맞고, 스크린리더가 제목부터 만난다. 원판은 보조기술에 잡히지 않는다.
-          */}
-          <div className="flex min-h-0 flex-1 flex-col gap-6 lg:grid lg:[grid-template-areas:'stack'] lg:gap-0">
-            {/*
-              ★ 클릭을 통과시킨다
-                이 층은 원판 «위» 에 겹쳐 있고 격자 칸 전체를 덮는다. 그대로 두면
-                눈에는 왼쪽 아래 글만 보이는데 실제로는 화면 전체가 이 상자라,
-                뒤쪽 기구도 화살표도 눌리지 않는다. 실제로 그렇게 만들어 놓고
-                한참 뒤에야 알았다.
-                진짜 눌려야 하는 것(점 · 버튼)에만 다시 켜 준다.
-            */}
-            <div className="order-2 shrink-0 lg:pointer-events-none lg:relative lg:z-10 lg:flex lg:items-end lg:[grid-area:stack]">
-              {/*
-                글 뒤에 아주 옅은 그늘을 깐다. 원판의 노란 타일이 글자 뒤로
-                지나갈 때 대비가 떨어지기 때문이다. 원판이 비쳐 보일 만큼만 덮는다.
-              */}
-              <div className="lg:pointer-events-none lg:-mx-12 lg:-mb-14 lg:w-[60%] lg:bg-[radial-gradient(135%_130%_at_0%_100%,var(--color-ink-950)_0%,var(--color-ink-950)_60%,transparent_92%)] lg:px-12 lg:pt-24 lg:pb-14">
-                <HeroCopy />
-              </div>
-            </div>
-
-            <div className="order-1 min-h-0 flex-1 lg:[grid-area:stack]">
-              <LineupDisc products={products} variant="canvas" />
-            </div>
+          <div className="min-h-0 flex-1">
+            <HeroStage products={products} />
           </div>
 
           <p
             aria-hidden="true"
-            className="font-display text-[0.7rem] tracking-[0.25em] text-ink-400 uppercase"
+            className="font-display px-6 pb-6 text-[0.7rem] tracking-[0.25em] text-ink-400 uppercase md:px-12 md:pb-8"
           >
             Scroll
           </p>

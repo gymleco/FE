@@ -10,15 +10,25 @@
    ══════════════════════════════════════════════════════════════ */
 
 @theme {
-  /* ── 중립색 — 쇼케이스는 암전에서 시작한다 ── */
-  --color-ink-950: #08090a;
-  --color-ink-900: #0e1012;
-  --color-ink-800: #16191c;
-  --color-ink-700: #23272c;
-  --color-ink-600: #3a4046;  /* 테두리 전용 — 글자로 쓰면 대비가 2:1 도 안 된다 */
-  --color-ink-400: #7d848c;
-  --color-ink-300: #a8aeb6;
-  --color-ink-100: #e6e8ea;
+  /* ── 중립색 ──
+
+     ★ 기본은 «밝은 테마» 다. 어두운 쪽은 아래 [data-theme="dark"] 가 덮는다.
+       처음에는 암전에서 시작하는 연출이라 다크를 기본으로 뒀는데, 기구
+       누끼를 올리고 보니 어두운 바탕에서 오려낸 가장자리가 더 드러났다.
+       밝은 바탕에서는 그 티가 훨씬 덜 난다 — 사진이 주인공인 화면이라
+       연출보다 사진이 우선이다.
+
+     ★ ink 눈금은 «어두움» 이 아니라 «바탕에서의 깊이» 다.
+       950 은 언제나 페이지 바탕, 100 은 언제나 본문 글자.
+       그래서 두 테마가 같은 유틸리티(bg-ink-950 · text-ink-100)를 그대로 쓴다. */
+  --color-ink-950: #f7f7f5;  /* 페이지 바탕 */
+  --color-ink-900: #f0f0ed;
+  --color-ink-800: #e6e6e2;
+  --color-ink-700: #d6d6d1;
+  --color-ink-600: #adb2b8;  /* 구분선 · 흐린 눈금 — 글자로 쓰지 않는다 */
+  --color-ink-400: #666c74;  /* 라벨 · 캡션 */
+  --color-ink-300: #3f444b;  /* 보조 글자 */
+  --color-ink-100: #14161a;  /* 본문 글자 */
   --color-paper: #f6f6f4;
   --color-paper-dim: #ececea;
 
@@ -33,28 +43,28 @@
   --color-signal-hover: #ffe14d;
   --color-signal-ink: #0a0b0c;   /* 그 노랑 위에 얹는 글자 */
 
-  --color-accent: #ffd400;       /* 글자 · 테두리 · 포커스 링 */
-  --color-accent-hover: #ffe14d;
+  --color-accent: #8a5a00;       /* 글자 · 테두리 · 포커스 링 */
+  --color-accent-hover: #6b4600;
 
   /* 사진 위에 글을 얹을 때 까는 덮개.
      알파를 쓰려면 색을 «숫자 세 개» 로 들고 있어야 해서 --color-* 와 따로 둔다.
      이걸 검정으로 박아 두면 밝은 테마에서 흰색 → 검정 그라디언트가 되어
      글이 중간에서 흐려진다. 실제로 그렇게 만들어 놓고 화면을 보고 알았다. */
-  --scrim-rgb: 8 9 10;
+  --scrim-rgb: 247 247 245;
 
   /* 면적 도면처럼 «정보를 담은 도형» 을 칠하는 색.
      글자(4.5:1)와 기준이 달라서(WCAG 1.4.11 비텍스트 3:1) 따로 둔다.
      어두운 테마의 이 값은 예전 fill-accent/85 가 합성되던 색 그대로다 —
      보이는 모습을 바꾸지 않으려고 맞췄다. */
-  --color-plot: #dab600;
+  --color-plot: #b07600;
 
   /* ── 보조 ── */
   --color-steel: #2b5f8c;
   --color-danger: #e5484d;
 
   /* ── 경계선 ── */
-  --color-hairline: rgb(255 255 255 / 0.12);
-  --color-hairline-dark: rgb(8 9 10 / 0.12);
+  --color-hairline: rgb(8 9 10 / 0.14);
+  --color-hairline-dark: rgb(255 255 255 / 0.14);
 
   /* ── 타이포그래피 ─────────────────────────────────────────
      한글은 시스템 폰트로 간다.
@@ -94,29 +104,27 @@
      OS 설정을 따르게 하려면 아래 선택자에 미디어 쿼리를 하나 더하면 된다.
    ══════════════════════════════════════════════════════════════ */
 
-:root[data-theme="light"] {
-  --color-ink-950: #f7f7f5;  /* 페이지 바탕 */
-  --color-ink-900: #f0f0ed;
-  --color-ink-800: #e6e6e2;
-  --color-ink-700: #d6d6d1;
-  --color-ink-600: #adb2b8;  /* 구분선 · 흐린 눈금 */
-  --color-ink-400: #666c74;  /* 라벨 · 캡션 */
-  --color-ink-300: #3f444b;  /* 보조 글자 */
-  --color-ink-100: #14161a;  /* 본문 글자 */
+:root[data-theme="dark"] {
+  --color-ink-950: #08090a;  /* 페이지 바탕 */
+  --color-ink-900: #0e1012;
+  --color-ink-800: #16191c;
+  --color-ink-700: #23272c;
+  --color-ink-600: #3a4046;  /* 테두리 전용 — 글자로 쓰면 대비가 2:1 도 안 된다 */
+  --color-ink-400: #7d848c;  /* 라벨 · 캡션 */
+  --color-ink-300: #a8aeb6;  /* 보조 글자 */
+  --color-ink-100: #e6e8ea;  /* 본문 글자 */
 
-  /* 노랑 버튼은 밝은 바탕에서도 그대로 둔다 — 브랜드가 거기에 있다.
-     글자로 쓰는 노랑만 읽히는 값으로 내린다. */
-  --color-accent: #8a5a00;
-  --color-accent-hover: #6b4600;
+  /* 노랑 버튼은 어느 테마에서도 그대로다 — 브랜드가 거기에 있다.
+     글자로 쓰는 노랑만 바탕에 맞춰 바꾼다. */
+  --color-accent: #ffd400;
+  --color-accent-hover: #ffe14d;
 
-  --scrim-rgb: 247 247 245;
+  --scrim-rgb: 8 9 10;
 
-  /* 85% 로 칠하면 어떤 값을 넣어도 3:1 을 넘기기 어려워서 100% 로 칠한다.
-     이 값이 흰 바탕에서 3.60:1 — 지금의 겨자색보다 확실히 노랗다. */
-  --color-plot: #b07600;
+  --color-plot: #dab600;
 
-  --color-hairline: rgb(8 9 10 / 0.14);
-  --color-hairline-dark: rgb(255 255 255 / 0.14);
+  --color-hairline: rgb(255 255 255 / 0.12);
+  --color-hairline-dark: rgb(8 9 10 / 0.12);
 }
 
 /* 가로로 미는 영역의 스크롤바를 감춘다.
@@ -135,11 +143,11 @@
 /* 테마 토글의 아이콘 — 어느 쪽을 보일지 CSS 가 고른다.
 
    JS 상태로 고르면 수화 전까지 반대쪽 아이콘이 잠깐 보인다.
-   기본(속성 없음)은 어두운 테마이므로 "해" 가 보이고, 누르면 밝아진다. */
-.theme-icon-dark { display: none; }
-.theme-icon-light { display: block; }
-:root[data-theme="light"] .theme-icon-dark { display: block; }
-:root[data-theme="light"] .theme-icon-light { display: none; }
+   기본(속성 없음)이 «밝은 테마» 이므로 "달" 이 보이고, 누르면 어두워진다. */
+.theme-icon-dark { display: block; }
+.theme-icon-light { display: none; }
+:root[data-theme="dark"] .theme-icon-dark { display: none; }
+:root[data-theme="dark"] .theme-icon-light { display: block; }
 
 /* 로고 — 어느 쪽을 보일지 CSS 가 고른다.
 
@@ -149,19 +157,48 @@
 
    테마 아이콘과 같은 이유로 JS 를 쓰지 않는다 — JS 상태로 고르면
    수화 전까지 안 보이는 로고가 잠깐 걸린다. 헤더 맨 왼쪽 자리다. */
-.logo-on-dark  { display: block; }
-.logo-on-light { display: none; }
-:root[data-theme="light"] .logo-on-dark  { display: none; }
-:root[data-theme="light"] .logo-on-light { display: block; }
+.logo-on-dark  { display: none; }
+.logo-on-light { display: block; }
+:root[data-theme="dark"] .logo-on-dark  { display: block; }
+:root[data-theme="dark"] .logo-on-light { display: none; }
 
 /* 들어올린 물체의 그림자 — 밝은 바탕에서 검정 65% 는 때가 낀 것처럼 보인다 */
 :root {
+  --shadow-lift: 0 14px 24px rgb(8 9 10 / 0.20);
+  --shadow-lift-sm: 0 8px 16px rgb(8 9 10 / 0.16);
+}
+:root[data-theme="dark"] {
   --shadow-lift: 0 18px 28px rgb(0 0 0 / 0.65);
   --shadow-lift-sm: 0 10px 22px rgb(0 0 0 / 0.6);
 }
-:root[data-theme="light"] {
-  --shadow-lift: 0 14px 24px rgb(8 9 10 / 0.20);
-  --shadow-lift-sm: 0 8px 16px rgb(8 9 10 / 0.16);
+
+/* 히어로 시안 B 의 세로 띠.
+
+   검은 바탕에서 검은 기구를 떼어내는 장치다. 그림자로는 안 되는 일을
+   («검정 위의 검정 그림자는 보이지 않는다») 면으로 푼다.
+
+   ★ 빨강도 노랑도 쓰지 않는다.
+     빨강은 브랜드에 없는 색이고, 노랑은 「문의」 전용으로 아껴 둔 색이라
+     큰 면적으로 깔면 버튼이 묻힌다. 강철빛으로 둔다.
+
+   ★ 테마마다 «방향» 이 반대다.
+     어두운 바탕에서는 띠가 바탕보다 밝아야 하고, 밝은 바탕에서는
+     어두워야 한다. 같은 색을 알파만 바꿔 쓰면 한쪽이 반드시 사라진다. */
+:root {
+  --hero-band: linear-gradient(
+    180deg,
+    rgb(21 23 26 / 0.04) 0%,
+    rgb(21 23 26 / 0.16) 42%,
+    rgb(21 23 26 / 0.03) 100%
+  );
+}
+:root[data-theme="dark"] {
+  --hero-band: linear-gradient(
+    180deg,
+    rgb(90 130 165 / 0.08) 0%,
+    rgb(148 170 190 / 0.55) 42%,
+    rgb(90 130 165 / 0.06) 100%
+  );
 }
 
 /* 누끼 사진을 원판 위에 올릴 때 쓰는 필터.
@@ -173,13 +210,13 @@
 
    밝은 바탕에서는 반대다. 이미 형태가 또렷하므로 띄우기만 하면 된다. */
 :root {
+  --cutout-lift: drop-shadow(0 14px 22px rgb(8 9 10 / 0.22));
+}
+:root[data-theme="dark"] {
   --cutout-lift:
     brightness(1.6) contrast(0.88)
     drop-shadow(0 0 1px rgb(255 255 255 / 0.62))
     drop-shadow(0 0 18px rgb(255 255 255 / 0.15));
-}
-:root[data-theme="light"] {
-  --cutout-lift: drop-shadow(0 14px 22px rgb(8 9 10 / 0.22));
 }
 
 /* 테마를 바꾸는 순간 화면 전체가 튀지 않도록 바탕색만 부드럽게 넘긴다.
