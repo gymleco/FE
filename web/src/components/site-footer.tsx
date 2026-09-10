@@ -179,6 +179,16 @@ export async function SiteFooter() {
                 개인정보처리방침
               </Link>
             </li>
+            <li>
+              <Link href="/terms" className="text-ink-300 hover:text-ink-100">
+                이용약관
+              </Link>
+            </li>
+            <li>
+              <Link href="/cookies" className="text-ink-300 hover:text-ink-100">
+                쿠키 정책
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
