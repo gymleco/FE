@@ -46,7 +46,7 @@ export async function SiteFooter() {
   });
 
   return (
-    <footer className="relative overflow-hidden border-t border-hairline px-6 pt-16 pb-0 md:px-12">
+    <footer className="relative overflow-hidden border-t border-hairline px-6 pt-16 pb-10 md:px-12">
       <div className="flex flex-col gap-12 md:flex-row md:justify-between">
         <div>
           <BrandLogo height={26} />
@@ -173,7 +173,7 @@ export async function SiteFooter() {
         </nav>
       )}
 
-      <div className="mt-14 border-t border-hairline pt-8 pb-10 text-xs leading-relaxed text-ink-400">
+      <div className="mt-14 border-t border-hairline pt-8 text-xs leading-relaxed text-ink-400">
         {businessLine.length > 0 && <p>{businessLine.join(" · ")}</p>}
         {contactLine.length > 0 && (
           <p className="mt-1">{contactLine.join(" · ")}</p>
@@ -182,36 +182,39 @@ export async function SiteFooter() {
       </div>
 
       {/*
-        바닥에 잘린 워드마크.
+        푸터 워드마크.
 
         ★ 장식이므로 화면을 읽어 주는 사람에게는 내보내지 않는다.
           바로 위 저작권 줄이 이미 «GYMLECO KOREA» 라고 말한다. 여기서 또
           읽어 주면 같은 말을 두 번 듣는다.
 
-        ★ 아래를 향해 흐려지게 한다.
-          받은 로고가 300px 라 화면 폭으로 늘리면 가장자리가 무를 수밖에
-          없다. 아래로 갈수록 사라지게 하면 그 무름이 덜 드러나고,
-          레퍼런스처럼 «바닥에서 잘린» 느낌도 같이 난다.
-          본사에서 SVG 를 받으면 이 마스크 없이도 또렷해진다.
+        ★ 자르지 않고 통째로 보여 준다.
+          처음엔 레퍼런스처럼 바닥에서 잘리게 두고 아래로 흐려지는 마스크를
+          씌웠는데, 로고가 무슨 글자인지 알아볼 수 없다는 지적을 받았다.
+          잘라서 얻는 «멋» 보다 로고가 읽히는 쪽이 우선이다.
 
-        ★ 자리를 차지하지 않는다(absolute).
-          자리를 차지하게 두면 잘린 만큼 푸터가 길어져 빈 공간이 생긴다.
+        ★ 그래서 자리를 차지하게 둔다(absolute 가 아니다).
+          잘리지 않으려면 푸터가 로고 높이만큼 실제로 길어져야 한다.
+          띄워 두면 위 글자와 겹치거나 화면 밖으로 밀려난다.
+
+        ★ 불투명도는 올리되 100% 로 두지 않는다.
+          받은 로고가 300px 뿐이라 화면 폭으로 늘리면 4배 넘게 확대돼
+          가장자리가 무르다. 살짝 물린 채로 두면 «바탕에 깔린 로고» 로
+          읽히지만, 진하게 올리면 그냥 흐린 그림이 된다.
+          본사에서 SVG 를 받으면 이 제약이 사라진다.
       */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-[52%] select-none"
-      >
+      <div aria-hidden="true" className="pointer-events-none mt-6 select-none">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo-ink.png"
           alt=""
-          className="logo-on-light w-full opacity-[0.07] [mask-image:linear-gradient(to_bottom,#000_35%,transparent_92%)]"
+          className="logo-on-light w-full opacity-[0.14]"
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo-white.png"
           alt=""
-          className="logo-on-dark w-full opacity-[0.09] [mask-image:linear-gradient(to_bottom,#000_35%,transparent_92%)]"
+          className="logo-on-dark w-full opacity-[0.18]"
         />
       </div>
     </footer>
