@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { PageHeader } from "@/components/page-header";
 import { SiteHeader } from "@/components/site-header";
 import { LegalBody, LegalDraftNotice, LegalSection } from "@/components/legal";
+import { ANALYTICS_ENABLED } from "@/lib/analytics";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
@@ -55,6 +57,27 @@ export default function PrivacyPage() {
                 브라우저 정보 (스팸 방지 목적)
               </li>
             </ul>
+            {/*
+              분석 도구를 켜면 이 문단이 «저절로» 따라 나온다.
+              사람이 기억해서 고치는 방식은 반드시 한 번은 어긋나고,
+              그때 생기는 «고지 없이 수집한 기간» 은 되돌릴 수 없다.
+              → src/lib/analytics.ts
+            */}
+            {ANALYTICS_ENABLED && (
+              <p className="mt-3">
+                이와 별도로, 방문 통계를 파악하기 위해 구글 애널리틱스를 통해
+                방문 화면·머문 시간·유입 경로·기기 정보가 자동으로 수집됩니다.
+                접속 IP 는 마지막 자리를 지운 상태로 처리하며, 수집 항목과
+                거부 방법은{" "}
+                <Link
+                  href="/cookies"
+                  className="border-b border-accent text-accent hover:text-accent-hover"
+                >
+                  쿠키 정책
+                </Link>
+                에 적어 두었습니다.
+              </p>
+            )}
           </LegalSection>
 
           <LegalSection title="2. 수집 및 이용 목적">
@@ -111,6 +134,28 @@ export default function PrivacyPage() {
               지체 없이 처리합니다.
             </p>
           </LegalSection>
+
+          {ANALYTICS_ENABLED && (
+            <LegalSection title="7-1. 개인정보의 국외 이전">
+              <p>
+                방문 통계 분석을 위해 아래와 같이 정보가 국외로 이전됩니다.
+              </p>
+              <ul className="mt-3 list-disc space-y-1 pl-5">
+                <li>이전받는 자 — Google LLC</li>
+                <li>이전 국가 — 미국 등 Google 이 서버를 운영하는 국가</li>
+                <li>
+                  이전 항목 — 방문 화면, 머문 시간, 유입 경로, 기기·브라우저
+                  정보, 익명화된 접속 IP
+                </li>
+                <li>이전 목적 — 방문 통계 분석</li>
+                <li>보유 기간 — Google 의 보관 정책에 따름</li>
+              </ul>
+              <p className="mt-3">
+                이전을 원하지 않으시면 쿠키 정책에 안내된 방법으로 수집을
+                거부하실 수 있으며, 거부하셔도 사이트 이용에는 제한이 없습니다.
+              </p>
+            </LegalSection>
+          )}
 
           <LegalSection title="8. 개인정보 보호책임자">
             <p className="text-ink-400">

@@ -20,6 +20,42 @@ function toUrl(value: string): URL | null {
 const cdnUrl = toUrl(cdnOrigin);
 
 /**
+ * ── 분석 도구를 켰을 때만 여는 구멍 ───────────────────────────
+ *
+ * 구글 애널리틱스는 두 도메인을 쓴다.
+ *   googletagmanager.com  — 스크립트를 내려받는 곳 (script-src)
+ *   google-analytics.com  — 수집 데이터를 보내는 곳 (connect-src)
+ *
+ * 둘 중 하나만 빠져도 «에러 화면 없이» 차단된다. 붙인 줄 알고 며칠
+ * 지나서야 데이터가 안 쌓인 것을 알게 되는 종류의 실패다.
+ *
+ * ★ 측정 ID 가 없으면 이 구멍을 열지 않는다.
+ *   쓰지도 않는 외부 도메인을 상시 허용해 두면, 나중에 인젝션이
+ *   생겼을 때 데이터를 빼낼 통로를 미리 뚫어 두는 셈이 된다.
+ *
+ * ★ 판정 규칙을 src/lib/analytics.ts 와 «같게» 유지한다.
+ *   next.config.ts 는 앱 코드를 import 하지 않으므로 규칙이 두 곳에
+ *   있다. 한쪽만 고치면 CSP 와 스크립트가 갈라진다.
+ */
+const gaId = /^G-[A-Z0-9]{6,}$/.test(process.env.NEXT_PUBLIC_GA_ID?.trim() ?? "")
+  ? (process.env.NEXT_PUBLIC_GA_ID as string).trim()
+  : "";
+
+const gaScriptSrc = gaId ? ["https://www.googletagmanager.com"] : [];
+const gaConnectSrc = gaId
+  ? [
+      "https://www.google-analytics.com",
+      "https://*.google-analytics.com",
+      "https://*.analytics.google.com",
+      "https://www.googletagmanager.com",
+    ]
+  : [];
+// 일부 환경에서 수집이 이미지 요청으로 폴백한다
+const gaImgSrc = gaId
+  ? ["https://www.google-analytics.com", "https://www.googletagmanager.com"]
+  : [];
+
+/**
  * ── CSP 방침 ────────────────────────────────────────────────
  *
  * 공개 페이지는 SSG/ISR 로 서빙된다. nonce 기반 CSP 를 쓰면
@@ -43,12 +79,12 @@ const cdnUrl = toUrl(cdnOrigin);
  */
 const csp = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src ${["'self'", "'unsafe-inline'", ...(isDev ? ["'unsafe-eval'"] : []), ...gaScriptSrc].join(" ")}`,
   `style-src 'self' 'unsafe-inline'`,
-  `img-src ${["'self'", "blob:", "data:", cdnUrl?.origin].filter(Boolean).join(" ")}`,
+  `img-src ${["'self'", "blob:", "data:", cdnUrl?.origin, ...gaImgSrc].filter(Boolean).join(" ")}`,
   // next/font 는 폰트를 빌드 시점에 셀프호스팅한다. 외부 폰트 도메인이 필요 없다.
   `font-src 'self'`,
-  `connect-src ${["'self'", apiOrigin].filter(Boolean).join(" ")}`,
+  `connect-src ${["'self'", apiOrigin, ...gaConnectSrc].filter(Boolean).join(" ")}`,
   `object-src 'none'`,
   `base-uri 'self'`,
   `form-action 'self'`,

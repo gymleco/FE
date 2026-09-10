@@ -3,6 +3,7 @@ import { Archivo } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { SiteFooter } from "@/components/site-footer";
+import { Analytics } from "@/components/analytics";
 
 /**
  * 라틴 디스플레이 서체. "BORN IN SWEDEN" 같은 영문 헤드라인과
@@ -106,6 +107,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
           <SiteFooter />
         </SmoothScroll>
+        {/*
+          분석 스크립트. 측정 ID 가 없으면 아무것도 그리지 않는다.
+          본문 뒤에 둔다 — 이 사이트의 목표 행동은 문의이고,
+          그 앞을 가로막을 값어치가 분석 스크립트에는 없다.
+        */}
+        <Analytics />
       </body>
     </html>
   );
