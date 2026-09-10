@@ -208,13 +208,13 @@ export async function SiteFooter() {
         <img
           src="/logo-ink.png"
           alt=""
-          className="logo-on-light w-full opacity-[0.14]"
+          className="logo-on-light mx-auto w-full opacity-[0.14] lg:w-[72%]"
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/logo-white.png"
           alt=""
-          className="logo-on-dark w-full opacity-[0.18]"
+          className="logo-on-dark mx-auto w-full opacity-[0.18] lg:w-[72%]"
         />
       </div>
     </footer>
