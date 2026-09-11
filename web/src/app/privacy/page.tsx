@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { SiteHeader } from "@/components/site-header";
 import { LegalBody, LegalDraftNotice, LegalSection } from "@/components/legal";
 import { ANALYTICS_ENABLED } from "@/lib/analytics";
+import { KAKAO_ENABLED } from "@/lib/kakao";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
@@ -153,6 +154,28 @@ export default function PrivacyPage() {
               <p className="mt-3">
                 이전을 원하지 않으시면 쿠키 정책에 안내된 방법으로 수집을
                 거부하실 수 있으며, 거부하셔도 사이트 이용에는 제한이 없습니다.
+              </p>
+            </LegalSection>
+          )}
+
+          {/*
+            카카오톡 채널 주소를 넣는 순간 이 조항도 같이 나온다.
+            지금 방식(링크로 채팅방을 여는 것)에서는 사이트가 카카오에
+            아무것도 넘기지 않는다 — 고객이 직접 채팅방을 연다.
+            알림톡을 붙이는 날은 전화번호가 발송 대행사로 넘어가므로
+            «처리 위탁» 조항이 따로 필요하다. 그건 이 조항이 아니다.
+          */}
+          {KAKAO_ENABLED && (
+            <LegalSection title="7-2. 카카오톡 상담">
+              <p>
+                접수를 마치신 뒤 카카오톡 채널로 상담을 이어가실 수 있습니다.
+                이 대화는 주식회사 카카오가 운영하는 카카오톡에서 이루어지며,
+                대화 내용에는 카카오의 개인정보처리방침이 함께 적용됩니다.
+              </p>
+              <p className="mt-3">
+                사이트는 문의에 적으신 연락처나 내용을 카카오에 전달하지
+                않습니다. 채팅방은 방문자가 직접 열고, 접수번호도 방문자가
+                직접 보내십니다.
               </p>
             </LegalSection>
           )}

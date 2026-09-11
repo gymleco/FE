@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { isReferenceNo } from "@/lib/inquiry-reference";
+
 /**
  * 문의 접수 프록시.
  *
@@ -44,7 +46,15 @@ export async function POST(request: NextRequest) {
    *   차단당했다는 사실 자체를 알리지 않는 것이 핵심이다.
    */
   if (typeof body.website === "string" && body.website.trim() !== "") {
-    return NextResponse.json({ ok: true }, { status: 201 });
+    /*
+     * 가짜 접수번호까지 돌려준다.
+     * 진짜 접수에는 번호가 붙어 나가는데 여기서만 번호가 빠지면,
+     * «번호가 안 오면 걸린 것» 이라는 신호가 다시 생긴다.
+     */
+    return NextResponse.json(
+      { ok: true, referenceNo: fakeReferenceNo() },
+      { status: 201 },
+    );
   }
 
   const name = String(body.name ?? "").trim();
@@ -124,8 +134,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 저장된 개인정보를 되돌려주지 않는다
-    return NextResponse.json({ ok: true }, { status: 201 });
+    /*
+     * 접수번호만 골라 돌려준다. 업스트림 본문을 통째로 흘리지 않는다 —
+     * 저장된 개인정보를 되돌려주지 않는다.
+     *
+     * 형식이 안 맞으면 버린다. 완료 화면은 번호 없이도 동작하고,
+     * BE 가 아직 번호를 주지 않는 버전이어도 접수 자체는 성공이다.
+     */
+    let referenceNo: string | undefined;
+    try {
+      const payload: unknown = await upstream.json();
+      const value = (payload as { referenceNo?: unknown } | null)?.referenceNo;
+      if (isReferenceNo(value)) referenceNo = value;
+    } catch {
+      // 본문이 비어 있어도 접수는 끝났다
+    }
+    return NextResponse.json(
+      referenceNo ? { ok: true, referenceNo } : { ok: true },
+      { status: 201 },
+    );
   } catch (error) {
     console.error(
       "문의 접수 전달 실패:",
@@ -136,4 +163,24 @@ export async function POST(request: NextRequest) {
       { status: 502 },
     );
   }
+}
+
+/**
+ * honeypot 에 걸린 요청에 돌려줄 가짜 번호.
+ * BE 가 만드는 번호와 겉모습이 같아야 한다 — 다르면 그게 신호가 된다.
+ * 0·O·1·I·L 을 뺀 글자에서 뽑는다 (BE 와 같은 규칙).
+ */
+function fakeReferenceNo(): string {
+  const ymd = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(new Date())
+    .replace(/-/g, "");
+  const alphabet = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
+  const bytes = crypto.getRandomValues(new Uint8Array(4));
+  const tail = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+  return "GL-" + ymd + "-" + tail;
 }

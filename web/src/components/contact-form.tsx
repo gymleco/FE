@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { isReferenceNo, REFERENCE_STORAGE_KEY } from "@/lib/inquiry-reference";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -149,6 +150,30 @@ export function ContactForm({
       if (!response.ok) {
         setStatus("error");
         return;
+      }
+
+      /*
+       * 접수번호는 주소창(?ref=...)이 아니라 sessionStorage 로 넘긴다.
+       *   - 주소에 실으면 방문 기록에 남고, 분석 도구를 켜는 날
+       *     페이지 주소와 함께 구글로 넘어간다.
+       *   - 완료 화면 주소를 누가 공유해도 남의 번호가 보이지 않는다.
+       *
+       * 번호가 없으면 지운다. 같은 탭에서 두 번 접수했을 때
+       * 앞 건의 번호가 뒤 건의 완료 화면에 뜨면 안 된다.
+       *
+       * 저장이 막힌 브라우저여도 접수는 이미 끝났다 — 번호만 안 보일 뿐이다.
+       */
+      try {
+        const payload: unknown = await response.json();
+        const reference = (payload as { referenceNo?: unknown } | null)
+          ?.referenceNo;
+        if (isReferenceNo(reference)) {
+          window.sessionStorage.setItem(REFERENCE_STORAGE_KEY, reference);
+        } else {
+          window.sessionStorage.removeItem(REFERENCE_STORAGE_KEY);
+        }
+      } catch {
+        // 번호 없이도 완료 화면은 동작한다
       }
 
       router.push("/contact/done");

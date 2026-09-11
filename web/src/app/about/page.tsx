@@ -8,8 +8,58 @@ import { SiteHeader } from "@/components/site-header";
 export const metadata: Metadata = {
   title: "About Gymleco",
   description:
-    "스웨덴에서 만드는 상업용 헬스기구 짐레코. 화려한 디스플레이 대신 프레임과 베어링에 비용을 씁니다. 본사 직영 한국 총판.",
+    "1994년 스웨덴에서 기구 세 대로 시작한 상업용 헬스기구 짐레코. 화려한 디스플레이 대신 프레임과 베어링에 비용을 씁니다. 본사 직영 한국 총판.",
 };
+
+/**
+ * 연혁.
+ *
+ * 출처 — 짐레코 본사 연혁 페이지(gymleco.com/pages/our-history).
+ * 본사 문장을 옮기지 않고 사실만 가져와 새로 썼다.
+ *
+ * ★ 숫자가 들어간 대목은 뺐다.
+ *   본사 사이트 안에서도 유통사 수가 서로 다르게 적혀 있다
+ *   (메인 «60곳 이상», 회사 소개 «50개국 이상», 연혁 «2024년 45곳 이상»).
+ *   대표님께 확인받기 전에는 어느 것도 싣지 않는다 — 회사 연혁은
+ *   지어내거나 짐작으로 고르면 안 되는 종류의 사실이다.
+ */
+const HISTORY = [
+  {
+    year: "1994",
+    title: "기구 세 대로 시작",
+    body: "핀란드 출신 창업자 카리 예른발이 스웨덴에서 첫 기구 세 대를 만듭니다. 그 세 대는 지금도 생산되고 있습니다.",
+  },
+  {
+    year: "1995",
+    title: "스톡홀름에서 첫선",
+    body: "솔나할렌 전시회에 처음 기구를 선보입니다. 좋은 반응에 힘입어 제품군을 넓히기 시작합니다.",
+  },
+  {
+    year: "2000",
+    title: "스웨덴 전역으로",
+    body: "머신에 이어 프리웨이트와 액세서리까지 갖추고 스웨덴 곳곳에 기구를 공급합니다.",
+  },
+  {
+    year: "2005",
+    title: "첫 해외 진출",
+    body: "노르웨이에 첫 해외 유통사가 생기며 북유럽으로 나갑니다.",
+  },
+  {
+    year: "2018",
+    title: "세계 시장으로",
+    body: "독일 FIBO 전시회에 참가해 여러 나라에 새로 진출합니다.",
+  },
+  {
+    year: "2022",
+    title: "새 생산 · 물류 시설",
+    body: "늘어난 수요에 맞춰 스웨덴에 새 생산·물류 시설을 엽니다.",
+  },
+  {
+    year: "2024",
+    title: "창립 30주년",
+    body: "처음 만든 세 대의 설계를 지금도 만드는 회사로 서른 해를 맞습니다.",
+  },
+] as const;
 
 export default function AboutPage() {
   return (
@@ -23,7 +73,7 @@ export default function AboutPage() {
         />
 
         {/* ── 제조 철학 ── */}
-        <section className="px-6 py-16 md:px-12 md:py-24">
+        <section className="px-6 py-14 md:px-12 md:py-24">
           <div className="max-w-3xl">
             <h2 className="text-[clamp(1.5rem,3.5vw,2.4rem)] leading-[1.3] font-semibold tracking-tight text-balance text-ink-100">
               좋은 기구는 조용합니다. 흔들리지 않고, 자주 고장 나지 않고,
@@ -42,13 +92,56 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/*
+          ── 연혁 ──
+
+          모바일이 주 화면이다. 표가 아니라 세로 목록으로 둔다 —
+          연도를 왼쪽 좁은 칸에 고정하면 360px 에서도 줄이 흐트러지지 않는다.
+          <ol> 인 이유: 순서 자체가 정보다(화면 읽기 프로그램도 «7개 중 1번째» 로 읽는다).
+        */}
+        <section
+          aria-labelledby="history-heading"
+          className="border-t border-hairline px-6 py-14 md:px-12 md:py-24"
+        >
+          <p className="font-display text-[0.7rem] tracking-[0.25em] text-accent uppercase">
+            History
+          </p>
+          <h2
+            id="history-heading"
+            className="mt-3 text-[clamp(1.5rem,3.5vw,2.4rem)] font-semibold tracking-tight text-balance text-ink-100"
+          >
+            1994년부터 지금까지
+          </h2>
+
+          <ol className="mt-10 max-w-3xl">
+            {HISTORY.map((h) => (
+              <li
+                key={h.year}
+                className="grid grid-cols-[4rem_1fr] gap-4 border-t border-hairline py-5 md:grid-cols-[7rem_1fr] md:gap-8 md:py-7"
+              >
+                <span className="tabular font-display text-lg font-bold text-accent md:text-2xl">
+                  {h.year}
+                </span>
+                <div>
+                  <p className="font-semibold text-ink-100 md:text-lg">
+                    {h.title}
+                  </p>
+                  <p className="mt-1.5 text-sm text-pretty text-ink-300 md:text-base">
+                    {h.body}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
         {/* ── 세 가지 기준 ── */}
-        <section className="border-t border-hairline px-6 py-16 md:px-12">
+        <section className="border-t border-hairline px-6 py-14 md:px-12 md:py-16">
           <dl className="grid gap-10 md:grid-cols-3">
             <Pillar
               en="Durability"
               ko="내구성"
-              body="상업용 기준으로 설계합니다. 하루 수백 회 사용을 전제로 프레임 두께와 용접부를 잡습니다. 소모품은 교체 가능한 구조로 만들어, 부품 하나 때문에 기구 전체를 버리지 않게 합니다."
+              body="상업용 기준으로 설계합니다. 하루 수백 회 사용을 전제로 프레임 두께와 용접부를 잡고, 모든 제품을 본사가 직접 만들고 직접 시험합니다. 소모품은 교체 가능한 구조로 만들어, 부품 하나 때문에 기구 전체를 버리지 않게 합니다."
             />
             <Pillar
               en="Space Efficiency"
@@ -64,7 +157,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── 한국 총판 ── */}
-        <section className="border-t border-hairline px-6 py-16 md:px-12">
+        <section className="border-t border-hairline px-6 py-14 md:px-12 md:py-16">
           <h2 className="text-[clamp(1.4rem,3vw,2rem)] font-semibold tracking-tight text-ink-100">
             한국 총판
           </h2>
@@ -127,7 +220,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── 창업 준비 중이라면 ── */}
-        <section className="border-t border-hairline px-6 py-20 md:px-12">
+        <section className="border-t border-hairline px-6 py-16 md:px-12 md:py-20">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-[clamp(1.6rem,4vw,2.6rem)] leading-tight font-bold tracking-tight text-balance text-ink-100">
               공간을 알려주시면

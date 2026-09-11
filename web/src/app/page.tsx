@@ -92,24 +92,49 @@ export default async function Home() {
           10,000px 을 내려가는 동안 배경이 한 번도 안 바뀌면, 내용이 달라져도
           «같은 화면이 계속된다» 로 읽힌다. 한 단씩만 옮겨도 스크롤에 마디가 생긴다.
         */}
-        <section className="border-t border-hairline bg-ink-900 px-6 py-28 md:px-12 md:py-40">
+        {/*
+          본사 창업 이야기로 연다.
+
+          「오래 쓰는 기구」 를 형용사로 설득하는 것보다, 30년 전에 만든
+          첫 세 대가 지금도 생산된다는 사실 하나가 더 세다.
+          출처 — 본사 연혁(gymleco.com/pages/our-history). 문장은 옮기지 않고
+          사실만 가져와 새로 썼다.
+
+          예전에 여기 있던 「좋은 기구는 조용합니다」 는 브랜드 화면에도
+          똑같이 있었다. 같은 문장이 두 화면에 있으면 둘 다 약해진다.
+          그 문장은 브랜드 화면에 남긴다.
+
+          ★ 연도는 본사가 「Since 1994」 라고 쓰는 값이다. 예전에 1985 로
+            적혀 있었는데 근거가 없는 숫자였다. 연혁은 지어내면 안 된다.
+        */}
+        <section className="border-t border-hairline bg-ink-900 px-6 py-20 md:px-12 md:py-40">
           <div className="mx-auto max-w-4xl">
-            <h2 className="text-[clamp(1.75rem,4vw,3rem)] leading-[1.25] font-semibold tracking-tight text-balance text-ink-100">
-              좋은 기구는 조용합니다. 흔들리지 않고, 자주 고장 나지 않고,
-              필요 이상으로 자리를 차지하지 않습니다.
-            </h2>
-            <p className="mt-10 max-w-2xl text-pretty text-ink-300 md:text-lg">
-              {/*
-                연도는 본사(gymleco.com)가 「Strength training equipment from
-                Sweden — Since 1994」 라고 쓰는 값에 맞춘다. 예전에 1985 로
-                적혀 있었는데 근거가 없는 숫자였다. 회사 연혁은 지어내면
-                안 되는 종류의 사실이다.
-              */}
-              짐레코는 1994년부터 스웨덴에서 상업용 헬스기구를 만들어
-              왔습니다. 화려한 디스플레이 대신 프레임의 두께와 용접,
-              베어링의 수명에 비용을 씁니다. 10년 뒤에도 처음과 같은
-              운동감을 내는 것이 목표입니다.
+            <p className="font-display text-[0.7rem] tracking-[0.25em] text-accent uppercase">
+              Since 1994
             </p>
+            <h2 className="mt-4 text-[clamp(1.75rem,4vw,3rem)] leading-[1.25] font-semibold tracking-tight text-balance text-ink-100">
+              1994년, 스웨덴.
+              <br />
+              기구 세 대로 시작했습니다.
+              <br />
+              그 세 대는 지금도 만들어집니다.
+            </h2>
+            <p className="mt-8 max-w-2xl text-pretty text-ink-300 md:mt-10 md:text-lg">
+              핀란드 출신 창업자 카리 예른발은 운동과 기계 설계에 빠져
+              스웨덴으로 건너왔고, 그곳에서 첫 기구 세 대를 만들었습니다.
+              서른 해가 넘게 지난 지금도 그 설계는 생산 라인에 있습니다.
+            </p>
+            <p className="mt-5 max-w-2xl text-pretty text-ink-300 md:text-lg">
+              해마다 모델을 갈아 치우는 대신, 한 번 잘 만든 설계를 오래
+              가져갑니다. 유행하는 기능보다 오래 버티는 구조에 공을 들이는
+              이유입니다.
+            </p>
+            <Link
+              href="/about"
+              className="mt-8 inline-block border-b border-accent pb-0.5 text-sm text-accent hover:text-accent-hover"
+            >
+              짐레코가 걸어온 길 →
+            </Link>
           </div>
         </section>
 
