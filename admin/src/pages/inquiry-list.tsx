@@ -133,10 +133,11 @@ export function InquiryList() {
 
         {!loading && !error && rows.length > 0 && (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[46rem] border-collapse text-sm">
+            <table className="w-full min-w-[54rem] border-collapse text-sm">
               <thead>
                 <tr className="border-b border-line text-left text-xs text-ink-3">
                   <th className="px-4 py-2.5 font-semibold">접수</th>
+                  <th className="px-4 py-2.5 font-semibold">접수번호</th>
                   <th className="px-4 py-2.5 font-semibold">유형</th>
                   <th className="px-4 py-2.5 font-semibold">이름</th>
                   <th className="px-4 py-2.5 font-semibold">회사</th>
@@ -150,6 +151,25 @@ export function InquiryList() {
                   <tr key={row.id} className="border-b border-line-soft last:border-0">
                     <td className="tabular px-4 py-2.5 whitespace-nowrap text-ink-2">
                       {whenKo(row.createdAt)}
+                    </td>
+                    {/*
+                      카톡으로 «[접수번호 GL-...]» 가 오면 이 칸에서 찾는다.
+                      재문의는 같은 분이 한 번 더 넣은 것이다 — 원래 건으로 바로
+                      가게 하고, 전화를 두 번 거는 일이 없게 눈에 띄게 둔다.
+                    */}
+                    <td className="px-4 py-2.5 whitespace-nowrap">
+                      <span className="tabular font-mono text-xs text-ink">
+                        {row.referenceNo}
+                      </span>
+                      {row.duplicateOfId !== null && (
+                        <Link
+                          to={`/inquiries/${row.duplicateOfId}`}
+                          title="같은 연락처로 먼저 들어온 문의로 갑니다"
+                          className="ml-2 align-middle"
+                        >
+                          <Pill tone="warn">재문의</Pill>
+                        </Link>
+                      )}
                     </td>
                     <td className="px-4 py-2.5">
                       {/* 유형은 서버가 이미 한국어로 준다 */}

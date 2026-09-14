@@ -327,6 +327,10 @@ export type Me = { username: string; role: string };
 
 export type InquiryListItem = {
   id: number;
+  /** 접수번호 GL-260911-K7Q2 — 카카오톡으로 온 번호와 맞춰 보는 값 */
+  referenceNo: string;
+  /** 재문의면 같은 연락처의 원래 문의 id. 아니면 null */
+  duplicateOfId: number | null;
   /** 서버가 이미 한국어로 준다 ("견적" · "무료 시연" …) */
   type: string;
   maskedName: string;
@@ -339,6 +343,10 @@ export type InquiryListItem = {
 
 export type InquiryDetail = {
   id: number;
+  /** 접수번호 GL-260911-K7Q2 */
+  referenceNo: string;
+  /** 재문의면 같은 연락처의 원래 문의 id. 아니면 null */
+  duplicateOfId: number | null;
   type: string;
   name: string;
   /** 복호화된 전화번호. 화면 밖으로 내보내지 않는다 */

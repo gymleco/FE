@@ -103,7 +103,7 @@ export function InquiryDetail() {
     <>
       <PageHead
         title={`${data.name} 님 문의`}
-        desc={`${whenKo(data.createdAt)} 접수 · ${data.type}`}
+        desc={`${data.referenceNo} · ${whenKo(data.createdAt)} 접수 · ${data.type}`}
         action={
           <Link
             to="/inquiries"
@@ -118,6 +118,25 @@ export function InquiryDetail() {
         이 화면에는 연락처가 그대로 나옵니다. <b>누가 언제 열어 봤는지 기록에 남습니다.</b>{" "}
         화면을 켜 둔 채 자리를 비우지 마세요.
       </p>
+
+      {/*
+        재문의 — 같은 연락처로 짧은 시간 안에 다시 들어온 문의.
+        두 번째 건에만 새로 적은 내용(다른 제품, 바뀐 평수)이 있을 수 있어
+        서버가 버리지 않고 따로 저장했다. 연락은 한 번만 하도록 여기서 알린다.
+      */}
+      {data.duplicateOfId !== null && (
+        <p className="mb-4 rounded-xs border border-warn/40 bg-surface-2 px-3.5 py-2.5 text-sm leading-relaxed text-ink">
+          <b>재문의입니다.</b> 같은 연락처로 먼저 들어온 문의가 있습니다 — 같은
+          분이니 연락은 한 번만 해 주세요. 이 건에 새로 적은 내용이 있는지만
+          확인하시면 됩니다.{" "}
+          <Link
+            to={`/inquiries/${data.duplicateOfId}`}
+            className="font-semibold text-accent underline-offset-2 hover:underline"
+          >
+            원래 문의 보기 →
+          </Link>
+        </p>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
         <div className="flex flex-col gap-4">
