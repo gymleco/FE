@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getProducts } from "@/lib/products-source";
-import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
 import { getBanner } from "@/lib/banner-source";
 import { ProductCard } from "@/components/product-card";
@@ -62,7 +61,6 @@ export default async function AccessoriesPage() {
           </div>
         </section>
       </main>
-      <FloatingCta />
     </>
   );
 }

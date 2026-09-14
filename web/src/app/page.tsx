@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FloatingCta } from "@/components/floating-cta";
 import { SiteHeader } from "@/components/site-header";
 import { HeroStage } from "@/components/home/hero-stage";
 import { getSectionMedia } from "@/lib/section-media";
@@ -43,16 +42,6 @@ export default async function Home() {
             그 안에 갇혀 동작하지 않는다. 원판이 넘칠 일이 없으므로 뺐다.
         */}
         {/*
-          맨 위에 있는지 알려 주는 표식.
-
-          히어로 자체에 표시를 달 수 없다 — sticky 라 스크롤해도 뒤에 남아
-          화면을 영영 벗어나지 않기 때문이다. 대신 «고정되지 않는» 이 한 줄을
-          두면, 이게 보이는 동안이 곧 «첫 화면» 이다.
-          첫 화면에는 이미 큰 버튼 두 개가 있으니 떠 있는 버튼은 비킨다.
-        */}
-        <div data-cta-anchor aria-hidden="true" className="h-px" />
-
-        {/*
           히어로 — 기구 한 대를 크게, 옆 기구는 살짝 걸치게.
 
           sticky 로 두어 다음 구역이 그 위를 덮으며 올라온다. 스크롤을
@@ -62,7 +51,7 @@ export default async function Home() {
             sticky 는 조상 중 하나라도 overflow 가 visible 이 아니면
             그 안에 갇혀 동작하지 않는다.
         */}
-        <section className="sticky top-[var(--header-h)] z-0 flex h-[calc(100svh-var(--header-h))] flex-col">
+        <section className="sticky top-[var(--header-h)] z-0 flex h-[calc(100svh-var(--header-h)-var(--quickbar-h))] flex-col">
           {/*
             h-full 이 아니라 flex-1 이다. h-full 을 주면 히어로가 세로를
             다 먹어 아래 「Scroll」 이 화면 밖으로 밀려난다.
@@ -270,11 +259,7 @@ export default async function Home() {
               평수와 천장 높이, 예상 회원 수만 알려주셔도 충분합니다.
               견적과 배치안을 같이 보내 드립니다.
             </p>
-            {/* 떠 있는 문의 버튼이 여기서 비킨다 (FloatingCta) */}
-            <div
-              data-cta-anchor
-              className="mt-12 flex flex-wrap justify-center gap-4"
-            >
+            <div className="mt-12 flex flex-wrap justify-center gap-4">
               <Link
                 href="/contact"
                 className="rounded-full bg-signal px-8 py-4 font-bold text-signal-ink transition-colors hover:bg-signal-hover"
@@ -293,11 +278,6 @@ export default async function Home() {
         </div>
       </main>
 
-      {/*
-        플로팅 문의 버튼 — 연출 중에도 문의 진입로가 항상 열려 있어야 한다
-        (§3.4-4). 이 사이트의 목표 행동은 장바구니가 아니라 문의다.
-      */}
-      <FloatingCta />
     </>
   );
 }

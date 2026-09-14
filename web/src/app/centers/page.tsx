@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { centersByRegion, officialCenters } from "@/lib/centers";
 import { findProduct } from "@/lib/catalog";
-import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
 import { getBanner } from "@/lib/banner-source";
 import { SampleBadge } from "@/components/sample-badge";
@@ -175,7 +174,6 @@ export default async function CentersPage() {
           </div>
         </section>
       </main>
-      <FloatingCta label="시연 · 오피셜 센터 문의" />
     </>
   );
 }

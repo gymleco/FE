@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import type { ProductCategory } from "@/lib/catalog";
 import { getProducts } from "@/lib/products-source";
 import { CatalogGrid } from "@/components/catalog-grid";
-import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
 import { getBanner } from "@/lib/banner-source";
 import { SiteHeader } from "@/components/site-header";
@@ -56,7 +55,6 @@ export default async function ProductsPage() {
           </div>
         </section>
       </main>
-      <FloatingCta />
     </>
   );
 }

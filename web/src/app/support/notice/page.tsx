@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { FloatingCta } from "@/components/floating-cta";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getNotices } from "@/lib/support-source";
@@ -90,7 +89,6 @@ export default async function NoticePage() {
         </section>
       </main>
       <SiteFooter />
-      <FloatingCta />
     </>
   );
 }

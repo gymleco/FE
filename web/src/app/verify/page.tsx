@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -95,7 +94,6 @@ export default function VerifyPage() {
         </section>
       </main>
       <SiteFooter />
-      <FloatingCta />
     </>
   );
 }

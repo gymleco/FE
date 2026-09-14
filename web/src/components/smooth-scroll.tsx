@@ -5,6 +5,8 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import { registerLenis } from "@/lib/scroll";
+
 /**
  * 관성 스크롤 (Lenis) + GSAP ScrollTrigger 동기화.
  *
@@ -30,12 +32,15 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     });
 
     lenis.on("scroll", ScrollTrigger.update);
+    // 퀵메뉴의 «맨 위로» 가 Lenis 를 거쳐 움직이게 한다 (lib/scroll.ts)
+    registerLenis(lenis);
 
     const raf = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      registerLenis(null);
       gsap.ticker.remove(raf);
       gsap.ticker.lagSmoothing(500, 33);
       lenis.destroy();

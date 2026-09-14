@@ -4,6 +4,7 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { SiteFooter } from "@/components/site-footer";
 import { Analytics } from "@/components/analytics";
+import { QuickMenu } from "@/components/quick-menu";
 
 /**
  * 라틴 디스플레이 서체. "BORN IN SWEDEN" 같은 영문 헤드라인과
@@ -92,7 +93,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col pb-[var(--quickbar-h)]">
         {/*
           키보드·스크린리더 사용자가 긴 스크롤 연출을 건너뛰고
           바로 본문으로 갈 수 있어야 한다.
@@ -107,6 +108,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
           <SiteFooter />
         </SmoothScroll>
+        {/*
+          퀵메뉴 — 어느 화면에서든 문의 · 정품 확인 · 카톡으로 가는 길 (기획서 §3.4-4).
+          모바일은 아래 고정 바라서, body 에 바 높이(--quickbar-h)만큼 아래 여백을
+          두어 푸터 마지막 줄이 바 뒤에 숨지 않게 한다.
+        */}
+        <QuickMenu />
         {/*
           분석 스크립트. 측정 ID 가 없으면 아무것도 그리지 않는다.
           본문 뒤에 둔다 — 이 사이트의 목표 행동은 문의이고,

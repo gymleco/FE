@@ -186,6 +186,15 @@
 :root { --header-h: 61px; }
 @media (min-width: 1024px) { :root { --header-h: 72px; } }
 
+/*
+  퀵메뉴 높이.
+  모바일은 아래 고정 바가 본문을 가리지 않게 body 아래 여백과 메인 히어로
+  높이에서 이만큼 뺀다. 아이폰 홈 막대 자리(safe-area)도 더한다.
+  PC 퀵메뉴는 모서리에 떠 있어 자리를 차지하지 않으므로 0 이다.
+*/
+:root { --quickbar-h: calc(60px + env(safe-area-inset-bottom)); }
+@media (min-width: 1024px) { :root { --quickbar-h: 0px; } }
+
 /* 히어로 시안 B 의 세로 띠.
 
    검은 바탕에서 검은 기구를 떼어내는 장치다. 그림자로는 안 되는 일을

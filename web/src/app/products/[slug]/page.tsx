@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 
 import { CATEGORY_LABEL, TYPICAL_FOOTPRINT_M2 } from "@/lib/catalog";
 import { getAllProductSlugs, getProduct, getProducts } from "@/lib/products-source";
-import { FloatingCta } from "@/components/floating-cta";
 import { FootprintDiagram } from "@/components/footprint-diagram";
 import { ProductCard } from "@/components/product-card";
 import { ProductMedia } from "@/components/product-media";
@@ -225,7 +224,6 @@ export default async function ProductDetailPage({
           </section>
         )}
       </main>
-      <FloatingCta />
     </>
   );
 }

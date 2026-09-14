@@ -9,7 +9,6 @@ import {
   STATUS_LABEL,
   type UsedItem,
 } from "@/lib/used";
-import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
 import { getBanner } from "@/lib/banner-source";
 import { SampleBadge } from "@/components/sample-badge";
@@ -124,7 +123,6 @@ export default async function UsedPage() {
           </div>
         </section>
       </main>
-      <FloatingCta label="중고 문의" />
     </>
   );
 }

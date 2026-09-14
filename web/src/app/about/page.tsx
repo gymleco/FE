@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { FloatingCta } from "@/components/floating-cta";
 import { PageHeader } from "@/components/page-header";
 import { SiteHeader } from "@/components/site-header";
 
@@ -240,7 +239,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-      <FloatingCta />
     </>
   );
 }
