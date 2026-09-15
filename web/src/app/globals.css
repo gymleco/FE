@@ -276,8 +276,10 @@
    ★ 누끼 사진이 서는 구역에는 쓰지 않는다.
      검은 기구가 검은 바탕에 묻힌다 — 밝은 테마를 기본으로 되돌린 이유가 그것이다.
 
-   ★ 로고 · 테마 아이콘은 따라오지 않는다.
-     그 둘은 :root 의 테마로 고르기 때문이다. 반전 구역에 두지 않는다.
+   ★ 로고는 반전 구역에서도 «바탕의 반대 색» 을 고른다 (아래 규칙).
+     로고 두 벌(흰색 · 잉크색)은 원래 :root 의 테마로 고르는데, 그대로 두면
+     밝은 테마의 검정 구역에 잉크색 로고가 나와 검정 위 검정이 된다.
+     테마 아이콘은 그런 규칙이 없으니 반전 구역에 두지 않는다.
    ══════════════════════════════════════════════════════════════ */
 
 /* 어두운 테마 안의 반전 구역 — @theme 의 밝은 값과 같아야 한다 */
@@ -304,6 +306,16 @@
   background-color: var(--color-ink-950);
   color: var(--color-ink-100);
 }
+
+/*
+  반전 구역 안의 로고.
+  밝은 테마: 구역이 검정 → 흰 로고 / 어두운 테마: 구역이 흰색 → 잉크색 로고.
+  위의 .logo-on-* 규칙보다 선택자가 구체적이라 이쪽이 이긴다.
+*/
+:root:not([data-theme="dark"]) .tone-invert .logo-on-light { display: none; }
+:root:not([data-theme="dark"]) .tone-invert .logo-on-dark  { display: block; }
+:root[data-theme="dark"] .tone-invert .logo-on-dark  { display: none; }
+:root[data-theme="dark"] .tone-invert .logo-on-light { display: block; }
 
 /* 테마를 바꾸는 순간 화면 전체가 튀지 않도록 바탕색만 부드럽게 넘긴다.
    글자색까지 전환하면 잔상이 생겨 오히려 지저분하다. */

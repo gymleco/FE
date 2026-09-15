@@ -164,6 +164,41 @@ export default async function Home() {
               />
             </>
           )}
+          {/*
+            가운데 워드마크 — 푸터와 같은 방식이다.
+
+            ★ 흐리게 깔고 글을 위에 얹는다.
+              이 구역은 세 칸의 글이 가운데까지 퍼져 있다. 로고를 진하게 두면
+              글과 부딪혀 둘 다 안 읽힌다.
+
+            ★ 사진 · 덮개보다 «뒤에» 적는다.
+              셋 다 -z-10 이라 같은 층이고, 같은 층에서는 나중에 적은 것이 위다.
+              관리 화면에서 배경 사진을 걸어도 로고가 덮개 아래로 묻히지 않는다.
+
+            ★ 폭을 860px 로 묶는다.
+              받은 로고가 300px 이라 더 키우면 가장자리가 무르다.
+              흐리게 까는 자리라 이 정도 확대는 티가 덜 난다.
+
+            ★ 로고 색은 구역을 따라 뒤집힌다 (globals.css «반전 구역 안의 로고»).
+          */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center px-6 select-none md:px-12"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-ink.png"
+              alt=""
+              className="logo-on-light max-h-[70%] w-full max-w-[860px] object-contain opacity-[0.1]"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-white.png"
+              alt=""
+              className="logo-on-dark max-h-[70%] w-full max-w-[860px] object-contain opacity-[0.12]"
+            />
+          </div>
+
           <h2
             id="trust-heading"
             className="text-[clamp(1.5rem,3vw,2.25rem)] font-semibold tracking-tight text-ink-100"
