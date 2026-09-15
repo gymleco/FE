@@ -96,7 +96,7 @@ export default async function Home() {
           ★ 연도는 본사가 「Since 1994」 라고 쓰는 값이다. 예전에 1985 로
             적혀 있었는데 근거가 없는 숫자였다. 연혁은 지어내면 안 된다.
         */}
-        <section className="border-t border-hairline bg-ink-900 px-6 py-20 md:px-12 md:py-40">
+        <section className="tone-invert px-6 py-20 md:px-12 md:py-40">
           <div className="mx-auto max-w-4xl">
             <p className="font-display text-[0.7rem] tracking-[0.25em] text-accent uppercase">
               Since 1994
@@ -133,7 +133,7 @@ export default async function Home() {
         {/* ── 70% 신뢰 구간 ──────────────────────────────────── */}
         <section
           aria-labelledby="trust-heading"
-          className="relative isolate overflow-hidden border-t border-hairline px-6 py-24 md:px-12 md:py-32"
+          className="tone-invert relative isolate overflow-hidden px-6 py-24 md:px-12 md:py-32"
         >
           {/*
             대표님이 관리 화면에서 올린 사진을 바닥에 깐다.
@@ -244,7 +244,7 @@ export default async function Home() {
         {/* ── 90% 문의 CTA ───────────────────────────────────── */}
         <section
           aria-labelledby="cta-heading"
-          className="border-t border-hairline px-6 py-28 md:px-12 md:py-40"
+          className="tone-invert px-6 py-28 md:px-12 md:py-40"
         >
           <div className="mx-auto max-w-3xl text-center">
             <h2

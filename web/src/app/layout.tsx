@@ -56,7 +56,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f7f5",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   // 확대를 막지 않는다 — 접근성 요구사항이다.
@@ -74,7 +74,7 @@ export const viewport: Viewport = {
  * localStorage 접근 자체가 예외를 던지는 환경(사파리 프라이빗)이 있으므로
  * 통째로 try 로 감싼다. 실패하면 기본값인 다크로 열린다.
  */
-const THEME_BOOTSTRAP = `try{var t=localStorage.getItem("gymleco-theme");if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="light"?"#f7f7f5":"#08090a")}}catch(e){}`;
+const THEME_BOOTSTRAP = `try{var t=localStorage.getItem("gymleco-theme");if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="light"?"#ffffff":"#111111")}}catch(e){}`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

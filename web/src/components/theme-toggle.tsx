@@ -63,7 +63,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     // 밝은 페이지 위에 검은 띠가 얹혀 어중간해 보인다.
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next === "light" ? "#f7f7f5" : "#08090a");
+      ?.setAttribute("content", next === "light" ? "#ffffff" : "#111111");
     try {
       window.localStorage.setItem(KEY, next);
     } catch {
